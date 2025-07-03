@@ -652,21 +652,11 @@ class ShopManager {
     const quantity = parseInt(document.getElementById("quantity").value) || 1;
     const item = this.currentPurchaseItem;
 
-    let totalPrice = 0;
-    if (item.price) {
-      totalPrice = item.price * quantity;
-    } else {
-      // For virtual currency items, show the cost in virtual currency
-      totalPrice = item.cost * quantity;
-    }
+    // All items now use IDR pricing
+    const totalPrice = item.price * quantity;
 
     const totalPriceElement = document.getElementById("totalPrice");
-    if (item.price) {
-      totalPriceElement.textContent = totalPrice.toLocaleString();
-    } else {
-      const currency = item.currency === "coins" ? "💎" : "💍";
-      totalPriceElement.innerHTML = `${currency} ${totalPrice.toLocaleString()}`;
-    }
+    totalPriceElement.textContent = totalPrice.toLocaleString();
   }
 
   updatePaymentDetails() {
