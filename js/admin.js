@@ -443,6 +443,214 @@ class AdminPanel {
       .join("");
   }
 
+  loadCampaigns() {
+    const campaigns = this.getAllCampaigns();
+
+    // Update campaign stats
+    const totalCampaigns = campaigns.length;
+    const pendingCampaigns = campaigns.filter(
+      (c) => c.status === "pending" || c.status === "pending_payment",
+    ).length;
+    const activeCampaigns = campaigns.filter(
+      (c) => c.status === "active",
+    ).length;
+    const campaignRevenue = campaigns
+      .filter((c) => c.status === "approved" || c.status === "active")
+      .reduce((sum, c) => sum + c.price, 0);
+
+    document.getElementById("totalCampaigns").textContent = totalCampaigns;
+    document.getElementById("pendingCampaigns").textContent = pendingCampaigns;
+    document.getElementById("activeCampaigns").textContent = activeCampaigns;
+    document.getElementById("campaignRevenue").textContent =
+      this.formatCurrency(campaignRevenue);
+
+    // Load campaigns table
+    this.loadCampaignsTable(campaigns);
+  }
+
+  loadCampaignsTable(campaigns) {
+    const tableBody = document.getElementById("campaignsTable");
+
+    if (campaigns.length === 0) {
+      tableBody.innerHTML =
+        '<tr><td colspan="8" style="text-align: center; color: var(--text-dark);">No campaigns yet</td></tr>';
+      return;
+    }
+
+    tableBody.innerHTML = campaigns
+      .map(
+        (campaign) => `
+            <tr class="campaign-row ${campaign.status}" data-campaign-id="${campaign.orderRef}">
+                <td class="campaign-id">${campaign.orderRef}</td>
+                <td class="campaign-user">
+                    <div class="user-name">${campaign.user.name}</div>
+                    <div class="user-email">${campaign.user.email}</div>
+                </td>
+                <td class="campaign-package">${campaign.packageInfo.name}</td>
+                <td class="campaign-post">${campaign.postTitle}</td>
+                <td class="campaign-amount">${this.formatCurrency(campaign.price)}</td>
+                <td class="campaign-status">
+                    <span class="status-badge status-${campaign.status}">${this.formatStatus(campaign.status)}</span>
+                </td>
+                <td class="campaign-date">${new Date(campaign.createdAt).toLocaleDateString("id-ID")}</td>
+                <td class="campaign-actions">
+                    <button class="action-btn view" onclick="adminPanel.viewCampaignDetail('${campaign.orderRef}')">👁️</button>
+                    ${
+                      campaign.status === "pending" ||
+                      campaign.status === "pending_payment"
+                        ? `
+                        <button class="action-btn approve" onclick="adminPanel.approveCampaign('${campaign.orderRef}')">✅</button>
+                        <button class="action-btn reject" onclick="adminPanel.rejectCampaign('${campaign.orderRef}')">❌</button>
+                    `
+                        : ""
+                    }
+                </td>
+            </tr>
+        `,
+      )
+      .join("");
+  }
+
+  loadCreators() {
+    const applications = this.getCreatorApplications();
+    const creators = applications.filter((app) => app.status === "approved");
+
+    // Update stats
+    document.getElementById("totalCreators").textContent = creators.length;
+    document.getElementById("pendingApplications").textContent =
+      applications.filter((app) => app.status === "pending").length;
+    document.getElementById("approvedCreators").textContent = creators.length;
+
+    // Load applications
+    this.loadCreatorApplications(applications);
+  }
+
+  loadCreatorApplications(applications) {
+    const container = document.getElementById("creatorApplicationsList");
+
+    if (applications.length === 0) {
+      container.innerHTML =
+        '<div style="text-align: center; color: var(--text-dark); padding: 40px;">No creator applications yet</div>';
+      return;
+    }
+
+    container.innerHTML = applications
+      .map(
+        (app) => `
+            <div class="application-card ${app.status}">
+                <div class="application-header">
+                    <div class="applicant-info">
+                        <h4>${app.name}</h4>
+                        <span class="application-category">${app.category}</span>
+                    </div>
+                    <span class="status-badge status-${app.status}">${this.formatStatus(app.status)}</span>
+                </div>
+                <div class="application-content">
+                    <p><strong>Why join:</strong> ${app.reason}</p>
+                    ${app.social ? `<p><strong>Social:</strong> ${app.social}</p>` : ""}
+                    <p><strong>Applied:</strong> ${new Date(app.appliedAt).toLocaleDateString("id-ID")}</p>
+                </div>
+                ${
+                  app.status === "pending"
+                    ? `
+                    <div class="application-actions">
+                        <button class="btn success" onclick="adminPanel.approveCreator('${app.id}')">✅ Approve</button>
+                        <button class="btn danger" onclick="adminPanel.rejectCreator('${app.id}')">❌ Reject</button>
+                    </div>
+                `
+                    : ""
+                }
+            </div>
+        `,
+      )
+      .join("");
+  }
+
+  loadWithdrawals() {
+    const withdrawals = this.getAllWithdrawals();
+
+    // Update stats
+    const totalWithdrawals = withdrawals.length;
+    const pendingWithdrawals = withdrawals.filter(
+      (w) => w.status === "pending",
+    ).length;
+    const approvedAmount = withdrawals
+      .filter((w) => w.status === "approved")
+      .reduce((sum, w) => sum + w.amount, 0);
+
+    document.getElementById("totalWithdrawals").textContent = totalWithdrawals;
+    document.getElementById("pendingWithdrawals").textContent =
+      pendingWithdrawals;
+    document.getElementById("approvedWithdrawals").textContent =
+      this.formatCurrency(approvedAmount);
+
+    // Load withdrawals table
+    this.loadWithdrawalsTable(withdrawals);
+  }
+
+  loadWithdrawalsTable(withdrawals) {
+    const tableBody = document.getElementById("withdrawalsTable");
+
+    if (withdrawals.length === 0) {
+      tableBody.innerHTML =
+        '<tr><td colspan="7" style="text-align: center; color: var(--text-dark);">No withdrawal requests yet</td></tr>';
+      return;
+    }
+
+    tableBody.innerHTML = withdrawals
+      .map(
+        (withdrawal) => `
+            <tr class="withdrawal-row ${withdrawal.status}" data-withdrawal-id="${withdrawal.id}">
+                <td class="withdrawal-id">${withdrawal.id}</td>
+                <td class="withdrawal-user">
+                    <div class="user-name">${this.getUserById(withdrawal.userId)?.name || "Unknown"}</div>
+                    <div class="user-email">${this.getUserById(withdrawal.userId)?.email || "Unknown"}</div>
+                </td>
+                <td class="withdrawal-amount">${this.formatCurrency(withdrawal.amount)}</td>
+                <td class="withdrawal-method">${withdrawal.method.toUpperCase()}</td>
+                <td class="withdrawal-status">
+                    <span class="status-badge status-${withdrawal.status}">${this.formatStatus(withdrawal.status)}</span>
+                </td>
+                <td class="withdrawal-date">${new Date(withdrawal.requestedAt).toLocaleDateString("id-ID")}</td>
+                <td class="withdrawal-actions">
+                    <button class="action-btn view" onclick="adminPanel.viewWithdrawalDetail('${withdrawal.id}')">👁️</button>
+                    ${
+                      withdrawal.status === "pending"
+                        ? `
+                        <button class="action-btn approve" onclick="adminPanel.approveWithdrawal('${withdrawal.id}')">✅</button>
+                        <button class="action-btn reject" onclick="adminPanel.rejectWithdrawal('${withdrawal.id}')">❌</button>
+                    `
+                        : ""
+                    }
+                </td>
+            </tr>
+        `,
+      )
+      .join("");
+  }
+
+  loadManagement() {
+    // Setup management team buttons
+    document
+      .getElementById("viewAiBot")
+      ?.addEventListener("click", () => this.showAiBotManagement());
+    document
+      .getElementById("viewReports")
+      ?.addEventListener("click", () => this.showReportsManagement());
+    document
+      .getElementById("viewRegistrations")
+      ?.addEventListener("click", () => this.showRegistrationsManagement());
+    document
+      .getElementById("viewFinance")
+      ?.addEventListener("click", () => this.showFinanceManagement());
+    document
+      .getElementById("viewPolicies")
+      ?.addEventListener("click", () => this.showPoliciesManagement());
+    document
+      .getElementById("viewCampaignDivision")
+      ?.addEventListener("click", () => this.showCampaignDivision());
+  }
+
   loadAnalytics() {
     const orders = this.getAllOrders();
 
@@ -457,6 +665,142 @@ class AdminPanel {
 
     // Top items
     this.loadTopItems(orders);
+  }
+
+  // New action methods
+  approveCampaign(campaignRef) {
+    if (confirm("Approve this campaign?")) {
+      const campaigns = this.getAllCampaigns();
+      const campaignIndex = campaigns.findIndex(
+        (c) => c.orderRef === campaignRef,
+      );
+
+      if (campaignIndex !== -1) {
+        campaigns[campaignIndex].status = "active";
+        campaigns[campaignIndex].approvedAt = new Date().toISOString();
+        localStorage.setItem("nabila_campaigns", JSON.stringify(campaigns));
+
+        this.loadCampaigns();
+        this.showNotification("Campaign approved and activated!", "success");
+      }
+    }
+  }
+
+  rejectCampaign(campaignRef) {
+    const reason = prompt("Reason for rejection (optional):");
+    if (reason !== null) {
+      const campaigns = this.getAllCampaigns();
+      const campaignIndex = campaigns.findIndex(
+        (c) => c.orderRef === campaignRef,
+      );
+
+      if (campaignIndex !== -1) {
+        campaigns[campaignIndex].status = "rejected";
+        campaigns[campaignIndex].rejectionReason = reason;
+        campaigns[campaignIndex].rejectedAt = new Date().toISOString();
+        localStorage.setItem("nabila_campaigns", JSON.stringify(campaigns));
+
+        this.loadCampaigns();
+        this.showNotification("Campaign rejected!", "success");
+      }
+    }
+  }
+
+  approveCreator(applicationId) {
+    if (confirm("Approve this creator application?")) {
+      const applications = this.getCreatorApplications();
+      const appIndex = applications.findIndex(
+        (app) => app.id === applicationId,
+      );
+
+      if (appIndex !== -1) {
+        applications[appIndex].status = "approved";
+        applications[appIndex].approvedAt = new Date().toISOString();
+        localStorage.setItem(
+          "nabila_creator_applications",
+          JSON.stringify(applications),
+        );
+
+        this.loadCreators();
+        this.showNotification("Creator application approved!", "success");
+      }
+    }
+  }
+
+  rejectCreator(applicationId) {
+    const reason = prompt("Reason for rejection (optional):");
+    if (reason !== null) {
+      const applications = this.getCreatorApplications();
+      const appIndex = applications.findIndex(
+        (app) => app.id === applicationId,
+      );
+
+      if (appIndex !== -1) {
+        applications[appIndex].status = "rejected";
+        applications[appIndex].rejectionReason = reason;
+        applications[appIndex].rejectedAt = new Date().toISOString();
+        localStorage.setItem(
+          "nabila_creator_applications",
+          JSON.stringify(applications),
+        );
+
+        this.loadCreators();
+        this.showNotification("Creator application rejected!", "success");
+      }
+    }
+  }
+
+  approveWithdrawal(withdrawalId) {
+    if (confirm("Approve this withdrawal request?")) {
+      const withdrawals = this.getAllWithdrawals();
+      const withdrawalIndex = withdrawals.findIndex(
+        (w) => w.id === withdrawalId,
+      );
+
+      if (withdrawalIndex !== -1) {
+        withdrawals[withdrawalIndex].status = "approved";
+        withdrawals[withdrawalIndex].approvedAt = new Date().toISOString();
+        localStorage.setItem("nabila_withdrawals", JSON.stringify(withdrawals));
+
+        this.loadWithdrawals();
+        this.showNotification("Withdrawal approved!", "success");
+      }
+    }
+  }
+
+  rejectWithdrawal(withdrawalId) {
+    const reason = prompt("Reason for rejection (optional):");
+    if (reason !== null) {
+      const withdrawals = this.getAllWithdrawals();
+      const withdrawalIndex = withdrawals.findIndex(
+        (w) => w.id === withdrawalId,
+      );
+
+      if (withdrawalIndex !== -1) {
+        withdrawals[withdrawalIndex].status = "rejected";
+        withdrawals[withdrawalIndex].rejectionReason = reason;
+        withdrawals[withdrawalIndex].rejectedAt = new Date().toISOString();
+        localStorage.setItem("nabila_withdrawals", JSON.stringify(withdrawals));
+
+        this.loadWithdrawals();
+        this.showNotification("Withdrawal rejected!", "success");
+      }
+    }
+  }
+
+  // Data getters
+  getAllCampaigns() {
+    return JSON.parse(localStorage.getItem("nabila_campaigns") || "[]");
+  }
+
+  getCreatorApplications() {
+    return JSON.parse(
+      localStorage.getItem("nabila_creator_applications") || "[]",
+    );
+  }
+
+  getAllWithdrawals() {
+    return JSON.parse(localStorage.getItem("nabila_withdrawals") || "[]");
   }
 
   calculatePaymentMethodStats(orders) {
