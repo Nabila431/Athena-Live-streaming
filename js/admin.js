@@ -2083,6 +2083,153 @@ adminStyles.textContent = `
         }
     }
 
+    /* New Management Team Styles */
+    .teams-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .team-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+        border-color: var(--secondary-color);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .team-header h3 {
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .team-status {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .team-status.online {
+        background: #27ae60;
+        color: white;
+    }
+
+    .team-status.active {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    .team-description p {
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .team-description ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .team-description li {
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    /* Campaign/Creator/Withdrawal Tables */
+    .campaigns-table-container, .withdrawals-table-container {
+        overflow-x: auto;
+        margin-top: 30px;
+    }
+
+    .campaigns-table, .withdrawals-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--bg-dark);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .campaigns-table th, .campaigns-table td,
+    .withdrawals-table th, .withdrawals-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .campaigns-table th, .withdrawals-table th {
+        background: var(--secondary-color);
+        color: white;
+        font-weight: bold;
+    }
+
+    .application-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .application-card:hover {
+        border-color: var(--secondary-color);
+        transform: translateY(-3px);
+    }
+
+    .application-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .applicant-info h4 {
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+
+    .application-category {
+        background: var(--secondary-color);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+
+    .application-content {
+        color: var(--text-dark);
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .application-content p {
+        margin-bottom: 10px;
+    }
+
+    .application-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
     @media (max-width: 768px) {
         .admin-stats {
             grid-template-columns: 1fr;
@@ -2117,6 +2264,25 @@ adminStyles.textContent = `
         .customer-detail, .item-detail {
             flex-direction: column;
             text-align: center;
+        }
+
+        .teams-overview {
+            grid-template-columns: 1fr;
+        }
+
+        .team-header {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .application-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .application-actions {
+            flex-direction: column;
         }
     }
 `;
