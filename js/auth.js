@@ -3,39 +3,43 @@ const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const authSwitchLogin = document.getElementById("authSwitchLogin");
 const authSwitchRegister = document.getElementById("authSwitchRegister");
-const authContainer = document.querySelector(".auth-container");
+const authMessage = document.getElementById("authMessage");
 
 // Event listener untuk beralih antara login dan register
-authSwitchLogin.addEventListener("click", () => {
-  registerForm.style.display = "none";
-  loginForm.style.display = "block";
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // Toggle ke register
+  const switchToRegister = document.getElementById("authSwitchRegister");
+  if (switchToRegister) {
+    switchToRegister.addEventListener("click", (e) => {
+      e.preventDefault();
+      loginForm.style.display = "none";
+      registerForm.style.display = "block";
+      hideAlert();
+    });
+  }
 
-authSwitchRegister.addEventListener("click", () => {
-  loginForm.style.display = "none";
-  registerForm.style.display = "block";
+  // Toggle ke login
+  const switchToLogin = document.getElementById("authSwitchLogin");
+  if (switchToLogin) {
+    switchToLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      registerForm.style.display = "none";
+      loginForm.style.display = "block";
+      hideAlert();
+    });
+  }
 });
 
 // Fungsi untuk menampilkan pesan alert
 function showAlert(message, type = "error") {
-  // Hapus alert yang sudah ada jika ada
-  const existingAlert = document.querySelector(".alert");
-  if (existingAlert) {
-    existingAlert.remove();
-  }
+  authMessage.textContent = message;
+  authMessage.className = `alert ${type}`;
+  authMessage.style.display = "block";
+}
 
-  // Buat elemen alert baru
-  const alertDiv = document.createElement("div");
-  alertDiv.className = `alert ${type}`;
-  alertDiv.textContent = message;
-
-  // Sisipkan alert di awal container
-  authContainer.insertBefore(alertDiv, authContainer.firstChild);
-
-  // Hapus alert setelah 5 detik
-  setTimeout(() => {
-    alertDiv.remove();
-  }, 5000);
+// Fungsi untuk menyembunyikan alert
+function hideAlert() {
+  authMessage.style.display = "none";
 }
 
 // Handle login form submission
