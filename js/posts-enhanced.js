@@ -1,268 +1,229 @@
-// Enhanced Posts Management with Real File Upload
+// Enhanced Posts Management System
 class EnhancedPostsManager {
   constructor() {
-    this.posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
-    this.currentFilter = "all";
-    this.maxFileSize = 10 * 1024 * 1024; // 10MB
-    this.allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "video/mp4",
-      "video/webm",
-      "video/ogg",
-    ];
+    this.currentUser = null;
+    this.currentTab = "feed";
+    this.uploadedMedia = [];
+    this.drafts = [];
     this.init();
   }
 
   init() {
-    if (!document.getElementById("createPostForm")) return;
-
-    console.log("Enhanced posts page loaded");
-    this.setupUI();
-    this.loadPosts();
+    this.checkAuthStatus();
     this.setupEventListeners();
-
-    // Check authentication
-    const user = window.authSystem?.getCurrentUser();
-    if (!user) {
-      this.showGuestMessage();
-    }
+    this.setupTabNavigation();
+    this.loadPosts();
   }
 
-  setupUI() {
-    // Add enhanced UI elements
-    this.addUploadPreview();
-    this.addProgressBar();
-    this.addEmojiPicker();
-  }
-
-  addUploadPreview() {
-    const imagePreview = document.getElementById("imagePreview");
-    if (imagePreview) {
-      imagePreview.innerHTML = `
-                <div id="uploadPreviewContainer" class="upload-preview-container" style="display: none;">
-                    <div class="preview-header">
-                        <span class="preview-title">Preview</span>
-                        <button type="button" id="removePreview" class="remove-btn">×</button>
-                    </div>
-                    <div id="previewContent" class="preview-content"></div>
-                    <div class="preview-info">
-                        <span id="fileInfo" class="file-info"></span>
-                    </div>
-                </div>
-            `;
-    }
-  }
-
-  addProgressBar() {
-    const form = document.getElementById("createPostForm");
-    if (form) {
-      const progressBar = document.createElement("div");
-      progressBar.id = "uploadProgress";
-      progressBar.className = "upload-progress";
-      progressBar.style.display = "none";
-      progressBar.innerHTML = `
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text" id="progressText">Uploading...</div>
-            `;
-      form.insertBefore(
-        progressBar,
-        form.querySelector('button[type="submit"]'),
-      );
-    }
-  }
-
-  addEmojiPicker() {
-    const contentTextarea = document.getElementById("postContent");
-    if (contentTextarea) {
-      const emojiBtn = document.createElement("button");
-      emojiBtn.type = "button";
-      emojiBtn.className = "emoji-trigger";
-      emojiBtn.innerHTML = "😀";
-      emojiBtn.title = "Tambah Emoji";
-
-      contentTextarea.parentNode.appendChild(emojiBtn);
-
-      emojiBtn.addEventListener("click", () =>
-        this.showEmojiPicker(contentTextarea),
-      );
+  checkAuthStatus() {
+    const userData = localStorage.getItem("nabila_user");
+    if (userData) {
+      this.currentUser = JSON.parse(userData);
     }
   }
 
   setupEventListeners() {
-    // Create post form
-    const createPostForm = document.getElementById("createPostForm");
-    if (createPostForm) {
-      createPostForm.addEventListener("submit", (e) =>
-        this.handleCreatePost(e),
-      );
+    // Form submission
+    document
+      .getElementById("createPostForm")
+      ?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.createPost();
+      });
+
+    // Media upload
+    const mediaInput = document.getElementById("postMedia");
+    const uploadArea = document.getElementById("uploadArea");
+
+    if (uploadArea) {
+      uploadArea.addEventListener("click", () => mediaInput?.click());
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("drag-over");
+      });
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("drag-over");
+      });
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("drag-over");
+        this.handleFileUpload(e.dataTransfer.files);
+      });
     }
 
-    // Enhanced image upload
-    const postImage = document.getElementById("postImage");
-    if (postImage) {
-      postImage.addEventListener("change", (e) => this.handleFileSelect(e));
-
-      // Add drag and drop
-      this.setupDragAndDrop(postImage);
+    if (mediaInput) {
+      mediaInput.addEventListener("change", (e) => {
+        this.handleFileUpload(e.target.files);
+      });
     }
 
-    // Remove preview
-    document.addEventListener("click", (e) => {
-      if (e.target.id === "removePreview") {
-        this.removeFilePreview();
-      }
-    });
+    // Character counters
+    this.setupCharacterCounters();
 
     // Filter buttons
-    const filterBtns = document.querySelectorAll(".filter-btn");
-    filterBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => this.handleFilter(e));
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        this.setActiveFilter(e.target);
+        this.filterPosts(e.target.dataset.filter);
+      });
     });
 
-    // Auto-save draft
-    this.setupAutoSave();
+    // Action buttons
+    document.getElementById("createPostBtn")?.addEventListener("click", () => {
+      this.switchTab("create");
+    });
+
+    document.getElementById("monetizeBtn")?.addEventListener("click", () => {
+      this.switchTab("monetize");
+    });
+
+    document
+      .getElementById("creatorProgramBtn")
+      ?.addEventListener("click", () => {
+        this.showCreatorProgramModal();
+      });
+
+    // Draft save
+    document.getElementById("saveDraft")?.addEventListener("click", () => {
+      this.saveDraft();
+    });
+
+    // Campaign buttons
+    document.querySelectorAll("[data-package]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        this.selectCampaignPackage(
+          e.target.dataset.package,
+          e.target.dataset.price,
+        );
+      });
+    });
+
+    // Modals
+    this.setupModalEventListeners();
   }
 
-  setupDragAndDrop(element) {
-    const dropZone = element.parentNode;
-
-    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-      dropZone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+  setupModalEventListeners() {
+    // Close modals
+    document.querySelectorAll(".modal .close").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.target.closest(".modal").style.display = "none";
       });
     });
 
-    ["dragenter", "dragover"].forEach((eventName) => {
-      dropZone.addEventListener(eventName, () => {
-        dropZone.classList.add("drag-over");
-      });
+    // Campaign modal
+    document.getElementById("cancelCampaign")?.addEventListener("click", () => {
+      document.getElementById("campaignModal").style.display = "none";
     });
 
-    ["dragleave", "drop"].forEach((eventName) => {
-      dropZone.addEventListener(eventName, () => {
-        dropZone.classList.remove("drag-over");
+    document
+      .getElementById("confirmCampaign")
+      ?.addEventListener("click", () => {
+        this.processCampaignPayment();
       });
+
+    // Creator modal
+    document.getElementById("cancelCreator")?.addEventListener("click", () => {
+      document.getElementById("creatorModal").style.display = "none";
     });
 
-    dropZone.addEventListener("drop", (e) => {
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        element.files = files;
-        this.handleFileSelect({ target: element });
+    document.getElementById("submitCreator")?.addEventListener("click", () => {
+      this.submitCreatorApplication();
+    });
+
+    // Click outside to close
+    window.addEventListener("click", (e) => {
+      if (e.target.classList.contains("modal")) {
+        e.target.style.display = "none";
       }
     });
   }
 
-  setupAutoSave() {
-    const titleInput = document.getElementById("postTitle");
-    const contentInput = document.getElementById("postContent");
+  setupCharacterCounters() {
+    const inputs = [
+      { id: "postTitle", max: 100 },
+      { id: "postContent", max: 2000 },
+    ];
 
-    if (titleInput && contentInput) {
-      [titleInput, contentInput].forEach((input) => {
+    inputs.forEach(({ id, max }) => {
+      const input = document.getElementById(id);
+      if (input) {
         input.addEventListener("input", () => {
-          this.saveAsDraft();
+          const count = input.value.length;
+          const counter = input.parentNode.querySelector(".char-count");
+          if (counter) {
+            counter.textContent = `${count}/${max} characters`;
+            counter.style.color =
+              count > max * 0.9 ? "#e74c3c" : "var(--text-dark)";
+          }
         });
-      });
-
-      // Load draft on page load
-      this.loadDraft();
-    }
-  }
-
-  saveAsDraft() {
-    const title = document.getElementById("postTitle")?.value || "";
-    const content = document.getElementById("postContent")?.value || "";
-
-    if (title || content) {
-      localStorage.setItem(
-        "nabila_post_draft",
-        JSON.stringify({
-          title,
-          content,
-          timestamp: Date.now(),
-        }),
-      );
-    }
-  }
-
-  loadDraft() {
-    const draft = localStorage.getItem("nabila_post_draft");
-    if (draft) {
-      try {
-        const { title, content, timestamp } = JSON.parse(draft);
-
-        // Only load if draft is less than 24 hours old
-        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
-          if (title) document.getElementById("postTitle").value = title;
-          if (content) document.getElementById("postContent").value = content;
-
-          this.showAlert("Draft dimuat! 📝", "info");
-        }
-      } catch (e) {
-        localStorage.removeItem("nabila_post_draft");
       }
+    });
+  }
+
+  setupTabNavigation() {
+    document.querySelectorAll(".nav-tab").forEach((tab) => {
+      tab.addEventListener("click", (e) => {
+        const tabName = e.target.dataset.tab;
+        this.switchTab(tabName);
+      });
+    });
+  }
+
+  switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll(".nav-tab").forEach((tab) => {
+      tab.classList.remove("active");
+    });
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
+
+    // Update sections
+    document.querySelectorAll(".posts-section").forEach((section) => {
+      section.classList.remove("active");
+    });
+    document.getElementById(`${tabName}-tab`).classList.add("active");
+
+    this.currentTab = tabName;
+
+    // Load tab-specific content
+    this.loadTabContent(tabName);
+  }
+
+  loadTabContent(tabName) {
+    switch (tabName) {
+      case "feed":
+        this.loadPosts();
+        break;
+      case "monetize":
+        this.loadMonetizationData();
+        break;
+      case "analytics":
+        this.loadAnalytics();
+        break;
     }
   }
 
-  clearDraft() {
-    localStorage.removeItem("nabila_post_draft");
-  }
+  handleFileUpload(files) {
+    if (!files || files.length === 0) return;
 
-  showGuestMessage() {
-    const postMessage = document.getElementById("postMessage");
-    if (postMessage) {
-      postMessage.innerHTML = `
-                <div class="guest-message">
-                    🔒 <strong>Login untuk membuat post dan upload konten</strong><br>
-                    <small>Bergabunglah dengan komunitas untuk berbagi konten menarik!</small>
-                </div>
-            `;
-      postMessage.className = "alert info";
-      postMessage.style.display = "block";
-    }
-
-    // Disable form
-    const form = document.getElementById("createPostForm");
-    if (form) {
-      form.style.opacity = "0.5";
-      form.style.pointerEvents = "none";
-    }
-  }
-
-  async handleFileSelect(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file
-    if (!this.validateFile(file)) {
-      e.target.value = "";
-      return;
-    }
-
-    // Show preview
-    await this.showFilePreview(file);
+    Array.from(files).forEach((file) => {
+      if (this.validateFile(file)) {
+        this.processFile(file);
+      }
+    });
   }
 
   validateFile(file) {
-    // Check file type
-    if (!this.allowedTypes.includes(file.type)) {
-      this.showAlert(
-        `Tipe file tidak didukung! Yang diizinkan: ${this.allowedTypes.join(", ")}`,
-        "error",
-      );
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    const allowedTypes = ["image/", "video/"];
+
+    if (file.size > maxSize) {
+      this.showAlert("File size too large. Maximum 50MB allowed.", "error");
       return false;
     }
 
-    // Check file size
-    if (file.size > this.maxFileSize) {
+    if (!allowedTypes.some((type) => file.type.startsWith(type))) {
       this.showAlert(
-        `File terlalu besar! Maksimal ${this.maxFileSize / (1024 * 1024)}MB`,
+        "Invalid file type. Only images and videos allowed.",
         "error",
       );
       return false;
@@ -271,65 +232,73 @@ class EnhancedPostsManager {
     return true;
   }
 
-  async showFilePreview(file) {
-    const container = document.getElementById("uploadPreviewContainer");
-    const content = document.getElementById("previewContent");
-    const fileInfo = document.getElementById("fileInfo");
-
-    if (!container || !content || !fileInfo) return;
-
-    // Show loading
-    content.innerHTML =
-      '<div class="loading-preview">📤 Memproses file...</div>';
-    container.style.display = "block";
-
-    try {
-      const fileData = await this.processFile(file);
-
-      // Update file info
-      fileInfo.textContent = `${file.name} (${this.formatFileSize(file.size)})`;
-
-      // Show preview based on file type
-      if (file.type.startsWith("image/")) {
-        content.innerHTML = `
-                    <img src="${fileData}" alt="Preview" class="image-preview">
-                `;
-      } else if (file.type.startsWith("video/")) {
-        content.innerHTML = `
-                    <video controls class="video-preview">
-                        <source src="${fileData}" type="${file.type}">
-                        Browser Anda tidak mendukung video.
-                    </video>
-                `;
-      }
-    } catch (error) {
-      this.showAlert("Gagal memproses file: " + error.message, "error");
-      this.removeFilePreview();
-    }
-  }
-
   processFile(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+    const reader = new FileReader();
 
-      reader.onload = (e) => {
-        resolve(e.target.result);
+    reader.onload = (e) => {
+      const mediaData = {
+        id: Date.now() + "_" + Math.random().toString(36).substr(2, 9),
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        url: e.target.result,
+        uploadedAt: new Date().toISOString(),
       };
 
-      reader.onerror = () => {
-        reject(new Error("Gagal membaca file"));
-      };
+      this.uploadedMedia.push(mediaData);
+      this.displayMediaPreview(mediaData);
+    };
 
-      reader.readAsDataURL(file);
-    });
+    reader.onerror = () => {
+      this.showAlert("Error reading file. Please try again.", "error");
+    };
+
+    reader.readAsDataURL(file);
   }
 
-  removeFilePreview() {
-    const container = document.getElementById("uploadPreviewContainer");
-    const fileInput = document.getElementById("postImage");
+  displayMediaPreview(mediaData) {
+    const container = document.getElementById("mediaPreviewContainer");
+    if (!container) return;
 
-    if (container) container.style.display = "none";
-    if (fileInput) fileInput.value = "";
+    const preview = document.createElement("div");
+    preview.className = "media-preview-item";
+    preview.dataset.mediaId = mediaData.id;
+
+    if (mediaData.type.startsWith("image/")) {
+      preview.innerHTML = `
+                <img src="${mediaData.url}" alt="${mediaData.name}">
+                <div class="media-info">
+                    <span class="media-name">${mediaData.name}</span>
+                    <span class="media-size">${this.formatFileSize(mediaData.size)}</span>
+                </div>
+                <button class="remove-media" onclick="postsManager.removeMedia('${mediaData.id}')">×</button>
+            `;
+    } else if (mediaData.type.startsWith("video/")) {
+      preview.innerHTML = `
+                <video src="${mediaData.url}" controls muted>
+                    Your browser does not support video playback.
+                </video>
+                <div class="media-info">
+                    <span class="media-name">${mediaData.name}</span>
+                    <span class="media-size">${this.formatFileSize(mediaData.size)}</span>
+                </div>
+                <button class="remove-media" onclick="postsManager.removeMedia('${mediaData.id}')">×</button>
+            `;
+    }
+
+    container.appendChild(preview);
+  }
+
+  removeMedia(mediaId) {
+    this.uploadedMedia = this.uploadedMedia.filter(
+      (media) => media.id !== mediaId,
+    );
+    const previewElement = document.querySelector(
+      `[data-media-id="${mediaId}"]`,
+    );
+    if (previewElement) {
+      previewElement.remove();
+    }
   }
 
   formatFileSize(bytes) {
@@ -340,641 +309,1303 @@ class EnhancedPostsManager {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
 
-  showUploadProgress(percent) {
-    const progressBar = document.getElementById("uploadProgress");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-
-    if (progressBar) {
-      progressBar.style.display = "block";
-      if (progressFill) progressFill.style.width = percent + "%";
-      if (progressText) progressText.textContent = `Uploading... ${percent}%`;
-    }
-  }
-
-  hideUploadProgress() {
-    const progressBar = document.getElementById("uploadProgress");
-    if (progressBar) progressBar.style.display = "none";
-  }
-
-  async handleCreatePost(e) {
-    e.preventDefault();
-
-    const user = window.authSystem?.getCurrentUser();
-    if (!user) {
-      this.showAlert("Anda harus login untuk membuat post!", "error");
+  createPost() {
+    if (!this.currentUser) {
+      this.showAlert("Please login to create posts.", "error");
       return;
     }
 
     const title = document.getElementById("postTitle").value.trim();
     const content = document.getElementById("postContent").value.trim();
-    const tags = document.getElementById("postTags").value.trim();
-    const imageFile = document.getElementById("postImage").files[0];
+    const category = document.getElementById("postCategory").value;
+    const tags = document
+      .getElementById("postTags")
+      .value.split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+    const enableMonetization =
+      document.getElementById("enableMonetization").checked;
 
     if (!title || !content) {
-      this.showAlert("Judul dan konten harus diisi!", "error");
+      this.showAlert("Title and content are required.", "error");
       return;
     }
 
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+    const post = {
+      id: "post_" + Date.now(),
+      title: title,
+      content: content,
+      category: category,
+      tags: tags,
+      media: [...this.uploadedMedia],
+      author: {
+        id: this.currentUser.id,
+        name: this.currentUser.name,
+        avatar: this.currentUser.avatar,
+      },
+      created_at: new Date().toISOString(),
+      likes: 0,
+      comments: [],
+      views: 0,
+      shares: 0,
+      monetized: enableMonetization,
+      earnings: 0,
+      status: "published",
+    };
 
-    try {
-      // Show loading
-      submitBtn.innerHTML =
-        '<span class="loading-spinner"></span> Memposting...';
-      submitBtn.disabled = true;
+    // Save post
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    posts.unshift(post);
+    localStorage.setItem("nabila_posts", JSON.stringify(posts));
 
-      // Simulate upload progress
-      if (imageFile) {
-        for (let i = 0; i <= 100; i += 10) {
-          this.showUploadProgress(i);
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-      }
+    // Reset form
+    this.resetForm();
 
-      // Process image if exists
-      let mediaData = null;
-      if (imageFile) {
-        mediaData = await this.processFile(imageFile);
-      }
-
-      // Create post
-      const newPost = {
-        id: Date.now().toString(),
-        title,
-        content,
-        tags: tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag),
-        media: mediaData
-          ? {
-              type: imageFile.type,
-              data: mediaData,
-              name: imageFile.name,
-              size: imageFile.size,
-            }
-          : null,
-        author: {
-          id: user.id,
-          name: user.displayName || user.name,
-          email: user.email,
-          avatar: user.avatar,
-        },
-        likes: 0,
-        comments: [],
-        shares: 0,
-        views: 0,
-        created_at: new Date().toISOString(),
-        likedBy: [],
-        sharedBy: [],
-      };
-
-      // Save post
-      this.posts.unshift(newPost);
-      localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
-
-      // Update user stats
-      user.totalPosts = (user.totalPosts || 0) + 1;
-      window.authSystem.updateProfile({ totalPosts: user.totalPosts });
-
-      this.showAlert("Post berhasil dibuat! 🎉", "success");
-      this.clearForm();
-      this.clearDraft();
-      this.loadPosts();
-    } catch (error) {
-      console.error("Error creating post:", error);
-      this.showAlert("Gagal membuat post: " + error.message, "error");
-    } finally {
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-      this.hideUploadProgress();
-    }
-  }
-
-  clearForm() {
-    document.getElementById("createPostForm").reset();
-    this.removeFilePreview();
-  }
-
-  handleFilter(e) {
-    document
-      .querySelectorAll(".filter-btn")
-      .forEach((btn) => btn.classList.remove("active"));
-    e.target.classList.add("active");
-
-    this.currentFilter = e.target.dataset.filter;
+    this.showAlert("Post created successfully!", "success");
+    this.switchTab("feed");
     this.loadPosts();
   }
 
+  resetForm() {
+    document.getElementById("createPostForm").reset();
+    this.uploadedMedia = [];
+    document.getElementById("mediaPreviewContainer").innerHTML = "";
+
+    // Reset character counters
+    document.querySelectorAll(".char-count").forEach((counter) => {
+      counter.textContent = counter.textContent.replace(/^\d+/, "0");
+    });
+  }
+
+  saveDraft() {
+    if (!this.currentUser) {
+      this.showAlert("Please login to save drafts.", "error");
+      return;
+    }
+
+    const title = document.getElementById("postTitle").value.trim();
+    const content = document.getElementById("postContent").value.trim();
+
+    if (!title && !content) {
+      this.showAlert("Nothing to save as draft.", "warning");
+      return;
+    }
+
+    const draft = {
+      id: "draft_" + Date.now(),
+      title: title,
+      content: content,
+      category: document.getElementById("postCategory").value,
+      tags: document.getElementById("postTags").value,
+      media: [...this.uploadedMedia],
+      userId: this.currentUser.id,
+      savedAt: new Date().toISOString(),
+    };
+
+    const drafts = JSON.parse(localStorage.getItem("nabila_drafts") || "[]");
+    drafts.unshift(draft);
+    localStorage.setItem("nabila_drafts", JSON.stringify(drafts));
+
+    this.showAlert("Draft saved successfully!", "success");
+  }
+
   loadPosts() {
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    this.displayPosts(posts);
+  }
+
+  filterPosts(filter) {
+    const allPosts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    let filteredPosts = [];
+
+    switch (filter) {
+      case "all":
+        filteredPosts = allPosts;
+        break;
+      case "my":
+        filteredPosts = this.currentUser
+          ? allPosts.filter((post) => post.author.id === this.currentUser.id)
+          : [];
+        break;
+      case "popular":
+        filteredPosts = allPosts
+          .filter((post) => post.likes > 10)
+          .sort((a, b) => b.likes - a.likes);
+        break;
+      case "trending":
+        filteredPosts = allPosts
+          .filter((post) => {
+            const hours24Ago = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            return new Date(post.created_at) > hours24Ago;
+          })
+          .sort((a, b) => b.likes + b.views - (a.likes + a.views));
+        break;
+      case "monetized":
+        filteredPosts = allPosts.filter((post) => post.monetized);
+        break;
+      default:
+        filteredPosts = allPosts;
+    }
+
+    this.displayPosts(filteredPosts);
+  }
+
+  displayPosts(posts) {
     const container = document.getElementById("postsContainer");
     if (!container) return;
 
-    let filteredPosts = [...this.posts];
-    const currentUser = window.authSystem?.getCurrentUser();
-
-    // Apply filters
-    switch (this.currentFilter) {
-      case "my":
-        if (!currentUser) {
-          container.innerHTML =
-            '<div class="no-posts">Login untuk melihat post Anda</div>';
-          return;
-        }
-        filteredPosts = filteredPosts.filter(
-          (post) => post.author.id === currentUser.id,
-        );
-        break;
-      case "popular":
-        filteredPosts = filteredPosts.sort(
-          (a, b) =>
-            b.likes + b.shares + b.views - (a.likes + a.shares + a.views),
-        );
-        break;
-      default:
-        filteredPosts = filteredPosts.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at),
-        );
-    }
-
-    if (filteredPosts.length === 0) {
+    if (posts.length === 0) {
       container.innerHTML = `
-                <div class="no-posts">
-                    <div class="no-posts-content">
-                        <h3>📝 Belum ada post</h3>
-                        <p>Jadilah yang pertama membuat post menarik!</p>
-                        <button onclick="document.getElementById('postTitle').focus()" class="btn">Buat Post Sekarang</button>
-                    </div>
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <h3>No posts found</h3>
+                    <p>Be the first to create amazing content!</p>
+                    <button class="btn primary" onclick="postsManager.switchTab('create')">Create Post</button>
                 </div>
             `;
       return;
     }
 
-    container.innerHTML = filteredPosts
-      .map((post) => this.renderPost(post))
+    container.innerHTML = posts
+      .map((post) => this.createPostCard(post))
       .join("");
-    this.setupPostInteractions();
   }
 
-  renderPost(post) {
-    const user = window.authSystem?.getCurrentUser();
-    const isLiked = user && post.likedBy.includes(user.id);
-    const isShared = user && post.sharedBy.includes(user.id);
-    const isOwner = user && post.author.id === user.id;
+  createPostCard(post) {
+    const mediaHtml =
+      post.media && post.media.length > 0
+        ? `
+            <div class="post-media">
+                ${post.media
+                  .map((media) => {
+                    if (media.type.startsWith("image/")) {
+                      return `<img src="${media.url}" alt="${media.name}" onclick="postsManager.viewMedia('${media.url}', 'image')">`;
+                    } else if (media.type.startsWith("video/")) {
+                      return `<video src="${media.url}" controls poster="" onclick="postsManager.viewMedia('${media.url}', 'video')"></video>`;
+                    }
+                    return "";
+                  })
+                  .join("")}
+            </div>
+        `
+        : "";
+
+    const tagsHtml =
+      post.tags && post.tags.length > 0
+        ? `
+            <div class="post-tags">
+                ${post.tags.map((tag) => `<span class="tag">#${tag}</span>`).join("")}
+            </div>
+        `
+        : "";
+
+    const monetizedBadge = post.monetized
+      ? '<span class="monetized-badge">💰 Monetized</span>'
+      : "";
 
     return `
-            <article class="post-card enhanced" data-post-id="${post.id}">
+            <div class="post-card enhanced" data-post-id="${post.id}">
                 <div class="post-header">
-                    <img src="${post.author.avatar}" alt="${post.author.name}" class="author-avatar" loading="lazy">
                     <div class="author-info">
-                        <h4>${post.author.name}</h4>
-                        <small>${this.formatDate(post.created_at)}</small>
+                        <img src="${post.author.avatar}" alt="${post.author.name}" class="author-avatar">
+                        <div class="author-details">
+                            <h4>${post.author.name}</h4>
+                            <span class="post-date">${new Date(post.created_at).toLocaleDateString("id-ID")}</span>
+                        </div>
                     </div>
-                    <div class="post-menu">
-                        ${isOwner ? `<button class="menu-btn delete-post-btn" data-post-id="${post.id}" title="Hapus Post">🗑️</button>` : ""}
-                        <button class="menu-btn share-btn" data-post-id="${post.id}" title="Share Post">📤</button>
+                    <div class="post-options">
+                        ${monetizedBadge}
+                        <button class="options-btn">⋯</button>
                     </div>
                 </div>
                 
                 <div class="post-content">
                     <h3>${post.title}</h3>
-                    <p class="post-text">${this.formatPostContent(post.content)}</p>
-                    
-                    ${
-                      post.media
-                        ? `
-                        <div class="post-media">
-                            ${
-                              post.media.type.startsWith("image/")
-                                ? `<img src="${post.media.data}" alt="Post media" class="post-image" loading="lazy" onclick="openMediaModal('${post.media.data}', 'image')">`
-                                : `<video controls class="post-video" onclick="openMediaModal('${post.media.data}', 'video')">
-                                     <source src="${post.media.data}" type="${post.media.type}">
-                                   </video>`
-                            }
-                        </div>
-                    `
-                        : ""
-                    }
-                    
-                    ${
-                      post.tags.length > 0
-                        ? `
-                        <div class="post-tags">
-                            ${post.tags.map((tag) => `<span class="tag">#${tag}</span>`).join("")}
-                        </div>
-                    `
-                        : ""
-                    }
+                    <p>${post.content}</p>
+                    ${mediaHtml}
+                    ${tagsHtml}
                 </div>
                 
                 <div class="post-stats">
-                    <span class="stat">${post.views} views</span>
-                    <span class="stat">${post.likes} likes</span>
-                    <span class="stat">${post.comments.length} comments</span>
-                    <span class="stat">${post.shares} shares</span>
+                    <div class="stats-left">
+                        <span class="stat-item">❤️ ${post.likes}</span>
+                        <span class="stat-item">💬 ${post.comments.length}</span>
+                        <span class="stat-item">👁️ ${post.views}</span>
+                        <span class="stat-item">🔄 ${post.shares}</span>
+                    </div>
+                    ${post.monetized ? `<div class="earnings">💰 Rp ${post.earnings.toLocaleString()}</div>` : ""}
                 </div>
                 
                 <div class="post-actions">
-                    <button class="action-btn like-btn ${isLiked ? "liked" : ""}" data-post-id="${post.id}" ${!user ? "disabled" : ""}>
-                        <span class="action-icon">${isLiked ? "❤️" : "🤍"}</span>
-                        <span class="action-text">Like</span>
+                    <button class="action-btn like-btn" onclick="postsManager.likePost('${post.id}')">
+                        ❤️ Like
                     </button>
-                    <button class="action-btn comment-btn" data-post-id="${post.id}" ${!user ? "disabled" : ""}>
-                        <span class="action-icon">💬</span>
-                        <span class="action-text">Comment</span>
+                    <button class="action-btn comment-btn" onclick="postsManager.showComments('${post.id}')">
+                        💬 Comment
                     </button>
-                    <button class="action-btn share-btn ${isShared ? "shared" : ""}" data-post-id="${post.id}">
-                        <span class="action-icon">📤</span>
-                        <span class="action-text">Share</span>
+                    <button class="action-btn share-btn" onclick="postsManager.sharePost('${post.id}')">
+                        🔄 Share
                     </button>
-                </div>
-                
-                <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                    <div class="comments-list">
-                        ${post.comments
-                          .map(
-                            (comment) => `
-                            <div class="comment">
-                                <img src="${comment.author.avatar}" alt="${comment.author.name}" class="comment-avatar" loading="lazy">
-                                <div class="comment-content">
-                                    <div class="comment-header">
-                                        <strong>${comment.author.name}</strong>
-                                        <small>${this.formatDate(comment.created_at)}</small>
-                                    </div>
-                                    <p>${this.formatPostContent(comment.content)}</p>
-                                </div>
-                            </div>
-                        `,
-                          )
-                          .join("")}
-                    </div>
                     ${
-                      user
+                      post.monetized
                         ? `
-                        <form class="comment-form" data-post-id="${post.id}">
-                            <img src="${user.avatar}" alt="${user.name}" class="comment-avatar">
-                            <div class="comment-input-wrapper">
-                                <input type="text" placeholder="Tulis komentar..." required>
-                                <button type="submit" class="comment-submit">Kirim</button>
-                            </div>
-                        </form>
+                        <button class="action-btn gift-btn" onclick="postsManager.sendGift('${post.id}')">
+                            🎁 Send Gift
+                        </button>
                     `
-                        : '<p class="login-prompt">Login untuk berkomentar</p>'
+                        : ""
                     }
                 </div>
-            </article>
+            </div>
         `;
   }
 
-  formatPostContent(content) {
-    // Enhanced text formatting
-    content = content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); // Bold
-    content = content.replace(/\*(.*?)\*/g, "<em>$1</em>"); // Italic
-    content = content.replace(/`(.*?)`/g, "<code>$1</code>"); // Code
-    content = content.replace(/\n/g, "<br>"); // Line breaks
-
-    // Auto-link URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    content = content.replace(
-      urlRegex,
-      '<a href="$1" target="_blank" rel="noopener">$1</a>',
-    );
-
-    // Auto-link hashtags
-    content = content.replace(/#(\w+)/g, '<span class="hashtag">#$1</span>');
-
-    return content;
+  setActiveFilter(activeBtn) {
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    activeBtn.classList.add("active");
   }
 
-  showEmojiPicker(targetElement) {
-    const emojis = [
-      "😀",
-      "😂",
-      "❤️",
-      "👍",
-      "👎",
-      "🔥",
-      "💯",
-      "🎉",
-      "👏",
-      "🙏",
-      "🤔",
-      "😭",
-      "😍",
-      "🤗",
-      "😎",
-      "🚀",
-      "⭐",
-      "🌟",
-      "💫",
-      "✨",
-    ];
+  viewMedia(url, type) {
+    // Create a modal to view media in full screen
+    const modal = document.createElement("div");
+    modal.className = "media-viewer-modal";
+    modal.innerHTML = `
+            <div class="media-viewer-content">
+                <span class="close-viewer">&times;</span>
+                ${
+                  type === "image"
+                    ? `<img src="${url}" style="max-width: 90vw; max-height: 90vh;">`
+                    : `<video src="${url}" controls style="max-width: 90vw; max-height: 90vh;"></video>`
+                }
+            </div>
+        `;
 
-    // Remove existing picker
-    const existingPicker = document.getElementById("emojiPicker");
-    if (existingPicker) {
-      existingPicker.remove();
-      return;
-    }
+    document.body.appendChild(modal);
 
-    const picker = document.createElement("div");
-    picker.id = "emojiPicker";
-    picker.className = "emoji-picker";
-    picker.innerHTML = emojis
-      .map(
-        (emoji) =>
-          `<button type="button" class="emoji-btn" data-emoji="${emoji}">${emoji}</button>`,
-      )
-      .join("");
+    // Close functionality
+    modal.querySelector(".close-viewer").addEventListener("click", () => {
+      modal.remove();
+    });
 
-    targetElement.parentNode.appendChild(picker);
-
-    // Position picker
-    const rect = targetElement.getBoundingClientRect();
-    picker.style.position = "absolute";
-    picker.style.top = rect.bottom + 5 + "px";
-    picker.style.left = rect.left + "px";
-    picker.style.zIndex = "1000";
-
-    // Add emoji to text
-    picker.addEventListener("click", (e) => {
-      if (e.target.classList.contains("emoji-btn")) {
-        const emoji = e.target.dataset.emoji;
-        const cursorPos = targetElement.selectionStart;
-        const text = targetElement.value;
-        targetElement.value =
-          text.substring(0, cursorPos) + emoji + text.substring(cursorPos);
-        picker.remove();
-        targetElement.focus();
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.remove();
       }
     });
-
-    // Close on outside click
-    setTimeout(() => {
-      document.addEventListener("click", function closeEmoji(e) {
-        if (
-          !picker.contains(e.target) &&
-          e.target !== targetElement.nextElementSibling
-        ) {
-          picker.remove();
-          document.removeEventListener("click", closeEmoji);
-        }
-      });
-    }, 100);
   }
 
-  setupPostInteractions() {
-    // Like buttons
-    document.querySelectorAll(".like-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => this.handleLike(e));
-    });
-
-    // Comment buttons
-    document.querySelectorAll(".comment-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => this.toggleComments(e));
-    });
-
-    // Comment forms
-    document.querySelectorAll(".comment-form").forEach((form) => {
-      form.addEventListener("submit", (e) => this.handleComment(e));
-    });
-
-    // Delete buttons
-    document.querySelectorAll(".delete-post-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => this.handleDeletePost(e));
-    });
-
-    // Share buttons
-    document.querySelectorAll(".share-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => this.handleShare(e));
-    });
-
-    // Update view counts
-    this.updateViewCounts();
-  }
-
-  // Continue with rest of the interaction methods...
-  handleLike(e) {
-    const user = window.authSystem?.getCurrentUser();
-    if (!user) {
-      this.showAlert("Login untuk like post!", "error");
+  likePost(postId) {
+    if (!this.currentUser) {
+      this.showAlert("Please login to like posts.", "error");
       return;
     }
 
-    const postId = e.currentTarget.dataset.postId;
-    const post = this.posts.find((p) => p.id === postId);
-    if (!post) return;
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    const postIndex = posts.findIndex((p) => p.id === postId);
 
-    const isLiked = post.likedBy.includes(user.id);
-
-    if (isLiked) {
-      post.likes--;
-      post.likedBy = post.likedBy.filter((id) => id !== user.id);
-      e.currentTarget.classList.remove("liked");
-      e.currentTarget.querySelector(".action-icon").textContent = "🤍";
-    } else {
-      post.likes++;
-      post.likedBy.push(user.id);
-      e.currentTarget.classList.add("liked");
-      e.currentTarget.querySelector(".action-icon").textContent = "❤️";
-    }
-
-    localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
-    this.updatePostStats(postId);
-
-    // Show animation
-    this.showLikeAnimation(e.currentTarget);
-  }
-
-  showLikeAnimation(button) {
-    button.style.transform = "scale(1.2)";
-    setTimeout(() => {
-      button.style.transform = "scale(1)";
-    }, 200);
-  }
-
-  toggleComments(e) {
-    const postId = e.currentTarget.dataset.postId;
-    const commentsSection = document.getElementById(`comments-${postId}`);
-
-    if (commentsSection.style.display === "none") {
-      commentsSection.style.display = "block";
-      e.currentTarget.classList.add("active");
-    } else {
-      commentsSection.style.display = "none";
-      e.currentTarget.classList.remove("active");
+    if (postIndex !== -1) {
+      posts[postIndex].likes += 1;
+      localStorage.setItem("nabila_posts", JSON.stringify(posts));
+      this.loadPosts();
     }
   }
 
-  handleComment(e) {
-    e.preventDefault();
+  sharePost(postId) {
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    const post = posts.find((p) => p.id === postId);
 
-    const user = window.authSystem?.getCurrentUser();
-    if (!user) return;
+    if (post) {
+      const shareUrl = `${window.location.origin}/posts.html?post=${postId}`;
 
-    const postId = e.target.dataset.postId;
-    const content = e.target.querySelector("input").value.trim();
+      if (navigator.share) {
+        navigator.share({
+          title: post.title,
+          text: post.content.substring(0, 100) + "...",
+          url: shareUrl,
+        });
+      } else {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          this.showAlert("Post link copied to clipboard!", "success");
+        });
+      }
 
-    if (!content) return;
+      // Increment share count
+      post.shares += 1;
+      localStorage.setItem("nabila_posts", JSON.stringify(posts));
+      this.loadPosts();
+    }
+  }
 
-    const post = this.posts.find((p) => p.id === postId);
-    if (!post) return;
+  selectCampaignPackage(packageType, price) {
+    if (!this.currentUser) {
+      this.showAlert("Please login to purchase campaign boosts.", "error");
+      return;
+    }
 
-    const newComment = {
-      id: Date.now().toString(),
-      content,
-      author: {
-        id: user.id,
-        name: user.displayName || user.name,
-        avatar: user.avatar,
-      },
-      created_at: new Date().toISOString(),
+    this.currentCampaign = {
+      package: packageType,
+      price: parseInt(price),
+      user: this.currentUser,
     };
 
-    post.comments.push(newComment);
-    localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
+    // Show campaign modal
+    const modal = document.getElementById("campaignModal");
+    const summary = document.getElementById("campaignSummary");
 
-    e.target.querySelector("input").value = "";
-    this.loadPosts();
+    const packageDetails = {
+      basic: {
+        name: "🚀 Basic Boost",
+        duration: "24 hours",
+        impressions: "100+",
+      },
+      popular: {
+        name: "⭐ Popular Boost",
+        duration: "7 days",
+        impressions: "1,000+",
+      },
+      premium: {
+        name: "💎 Premium Boost",
+        duration: "30 days",
+        impressions: "10,000+",
+      },
+      ultimate: {
+        name: "🏆 Ultimate Boost",
+        duration: "90 days",
+        impressions: "100,000+",
+      },
+    };
 
-    // Show comments section after adding comment
-    setTimeout(() => {
-      const commentsSection = document.getElementById(`comments-${postId}`);
-      if (commentsSection) {
-        commentsSection.style.display = "block";
-      }
-    }, 100);
+    const details = packageDetails[packageType];
+
+    summary.innerHTML = `
+            <div class="campaign-details">
+                <h3>${details.name}</h3>
+                <div class="detail-row">
+                    <span>Duration:</span>
+                    <span>${details.duration}</span>
+                </div>
+                <div class="detail-row">
+                    <span>Impressions:</span>
+                    <span>${details.impressions}</span>
+                </div>
+                <div class="detail-row total-row">
+                    <span><strong>Total:</strong></span>
+                    <span><strong>Rp ${price.toLocaleString()}</strong></span>
+                </div>
+            </div>
+        `;
+
+    modal.style.display = "block";
   }
 
-  handleDeletePost(e) {
-    if (!confirm("Apakah Anda yakin ingin menghapus post ini?")) return;
+  processCampaignPayment() {
+    const orderRef = "CAMPAIGN_" + Date.now();
+    const campaign = this.currentCampaign;
 
-    const postId = e.target.dataset.postId;
-    this.posts = this.posts.filter((p) => p.id !== postId);
-    localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
+    let message = `📢 *CAMPAIGN BOOST - NABILA STREAM*\n\n`;
+    message += `📋 *Order ID:* ${orderRef}\n`;
+    message += `📦 *Package:* ${campaign.package}\n`;
+    message += `💰 *Total:* Rp ${campaign.price.toLocaleString()}\n`;
+    message += `👤 *Username:* ${campaign.user.name}\n`;
+    message += `📧 *Email:* ${campaign.user.email}\n\n`;
+    message += `💳 *Payment Method:* GoPay\n`;
+    message += `📱 *GoPay Number:* 0895340205302\n\n`;
+    message += `Saya sudah transfer ke GoPay admin. Mohon approve campaign boost saya. Terima kasih! 🙏`;
 
-    // Update user stats
-    const user = window.authSystem?.getCurrentUser();
-    if (user) {
-      user.totalPosts = Math.max(0, (user.totalPosts || 0) - 1);
-      window.authSystem.updateProfile({ totalPosts: user.totalPosts });
-    }
+    const whatsappUrl = `https://wa.me/6285810526151?text=${encodeURIComponent(message)}`;
 
-    this.loadPosts();
-    this.showAlert("Post berhasil dihapus", "success");
-  }
-
-  handleShare(e) {
-    const postId = e.currentTarget.dataset.postId;
-    const post = this.posts.find((p) => p.id === postId);
-
-    if (!post) return;
-
-    const user = window.authSystem?.getCurrentUser();
-    if (user && !post.sharedBy.includes(user.id)) {
-      post.shares++;
-      post.sharedBy.push(user.id);
-      localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
-      this.updatePostStats(postId);
-    }
-
-    if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.content,
-        url: window.location.href,
-      });
-    } else {
-      const url = `${window.location.origin}/posts.html#${postId}`;
-      navigator.clipboard.writeText(`${post.title} - ${url}`).then(() => {
-        this.showAlert("Link post disalin ke clipboard!", "success");
-      });
-    }
-  }
-
-  updatePostStats(postId) {
-    const post = this.posts.find((p) => p.id === postId);
-    if (!post) return;
-
-    const postElement = document.querySelector(`[data-post-id="${postId}"]`);
-    if (!postElement) return;
-
-    const stats = postElement.querySelector(".post-stats");
-    if (stats) {
-      stats.innerHTML = `
-                <span class="stat">${post.views} views</span>
-                <span class="stat">${post.likes} likes</span>
-                <span class="stat">${post.comments.length} comments</span>
-                <span class="stat">${post.shares} shares</span>
-            `;
-    }
-  }
-
-  updateViewCounts() {
-    // Simulate view counting
-    this.posts.forEach((post) => {
-      post.views = (post.views || 0) + Math.floor(Math.random() * 3);
+    // Save campaign order
+    const campaigns = JSON.parse(
+      localStorage.getItem("nabila_campaigns") || "[]",
+    );
+    campaigns.unshift({
+      id: orderRef,
+      ...campaign,
+      status: "pending",
+      createdAt: new Date().toISOString(),
     });
-    localStorage.setItem("nabila_posts", JSON.stringify(this.posts));
+    localStorage.setItem("nabila_campaigns", JSON.stringify(campaigns));
+
+    // Close modal and redirect
+    document.getElementById("campaignModal").style.display = "none";
+    window.open(whatsappUrl, "_blank");
+
+    this.showAlert(
+      "Campaign order created! You will be redirected to WhatsApp.",
+      "success",
+    );
   }
 
-  formatDate(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now - date;
+  showCreatorProgramModal() {
+    document.getElementById("creatorModal").style.display = "block";
+  }
 
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
+  submitCreatorApplication() {
+    if (!this.currentUser) {
+      this.showAlert("Please login to apply for creator program.", "error");
+      return;
+    }
 
-    if (minutes < 1) return "Baru saja";
-    if (minutes < 60) return `${minutes}m`;
-    if (hours < 24) return `${hours}j`;
-    if (days < 7) return `${days}h`;
+    const name = document.getElementById("creatorName").value.trim();
+    const category = document.getElementById("creatorCategory").value;
+    const reason = document.getElementById("creatorReason").value.trim();
+    const social = document.getElementById("creatorSocial").value.trim();
 
-    return date.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "short",
-    });
+    if (!name || !category || !reason) {
+      this.showAlert("Please fill in all required fields.", "error");
+      return;
+    }
+
+    const application = {
+      id: "creator_" + Date.now(),
+      userId: this.currentUser.id,
+      name: name,
+      category: category,
+      reason: reason,
+      social: social,
+      status: "pending",
+      appliedAt: new Date().toISOString(),
+    };
+
+    const applications = JSON.parse(
+      localStorage.getItem("nabila_creator_applications") || "[]",
+    );
+    applications.unshift(application);
+    localStorage.setItem(
+      "nabila_creator_applications",
+      JSON.stringify(applications),
+    );
+
+    document.getElementById("creatorModal").style.display = "none";
+    document.getElementById("creatorApplicationForm").reset();
+
+    this.showAlert(
+      "Creator program application submitted! We will review and contact you soon.",
+      "success",
+    );
+  }
+
+  loadMonetizationData() {
+    if (!this.currentUser) return;
+
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    const userPosts = posts.filter(
+      (post) => post.author.id === this.currentUser.id,
+    );
+
+    const totalEarnings = userPosts.reduce(
+      (sum, post) => sum + (post.earnings || 0),
+      0,
+    );
+    const totalViews = userPosts.reduce(
+      (sum, post) => sum + (post.views || 0),
+      0,
+    );
+    const totalLikes = userPosts.reduce(
+      (sum, post) => sum + (post.likes || 0),
+      0,
+    );
+
+    document.getElementById("totalEarnings").textContent =
+      `Rp ${totalEarnings.toLocaleString()}`;
+    document.getElementById("totalViews").textContent =
+      totalViews.toLocaleString();
+    document.getElementById("totalLikes").textContent =
+      totalLikes.toLocaleString();
+  }
+
+  loadAnalytics() {
+    // Load analytics data and create charts
+    this.createPerformanceChart();
+    this.createAudienceChart();
+    this.loadTopPosts();
+  }
+
+  createPerformanceChart() {
+    // Simple chart implementation
+    const canvas = document.getElementById("performanceChart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    // Draw a simple performance chart placeholder
+    ctx.fillStyle = "#6a11cb";
+    ctx.fillRect(50, 50, 200, 100);
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText("Performance Chart", 100, 110);
+  }
+
+  createAudienceChart() {
+    // Simple chart implementation
+    const canvas = document.getElementById("audienceChart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    // Draw a simple audience chart placeholder
+    ctx.fillStyle = "#2575fc";
+    ctx.fillRect(50, 50, 200, 100);
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText("Audience Chart", 100, 110);
+  }
+
+  loadTopPosts() {
+    const posts = JSON.parse(localStorage.getItem("nabila_posts") || "[]");
+    const userPosts = this.currentUser
+      ? posts.filter((post) => post.author.id === this.currentUser.id)
+      : [];
+
+    const topPosts = userPosts
+      .sort((a, b) => b.likes + b.views - (a.likes + a.views))
+      .slice(0, 5);
+
+    const container = document.getElementById("topPostsList");
+    if (!container) return;
+
+    if (topPosts.length === 0) {
+      container.innerHTML =
+        "<p>No posts yet. Create your first post to see analytics!</p>";
+      return;
+    }
+
+    container.innerHTML = topPosts
+      .map(
+        (post, index) => `
+            <div class="top-post-item">
+                <div class="post-rank">#${index + 1}</div>
+                <div class="post-info">
+                    <h5>${post.title}</h5>
+                    <div class="post-metrics">
+                        ❤️ ${post.likes} • 👁️ ${post.views} • 💰 Rp ${(post.earnings || 0).toLocaleString()}
+                    </div>
+                </div>
+            </div>
+        `,
+      )
+      .join("");
   }
 
   showAlert(message, type = "info") {
-    window.authSystem?.showAlert(message, type);
+    const alertElement = document.getElementById("postMessage");
+    if (!alertElement) return;
+
+    alertElement.textContent = message;
+    alertElement.className = `alert ${type}`;
+    alertElement.style.display = "block";
+
+    setTimeout(() => {
+      alertElement.style.display = "none";
+    }, 5000);
   }
 }
-
-// Media modal functions
-window.openMediaModal = function (src, type) {
-  const modal = document.createElement("div");
-  modal.className = "media-modal";
-  modal.innerHTML = `
-        <div class="modal-overlay" onclick="closeMediaModal()">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeMediaModal()">×</button>
-                ${
-                  type === "image"
-                    ? `<img src="${src}" alt="Full size image">`
-                    : `<video controls autoplay><source src="${src}"></video>`
-                }
-            </div>
-        </div>
-    `;
-
-  document.body.appendChild(modal);
-  document.body.style.overflow = "hidden";
-};
-
-window.closeMediaModal = function () {
-  const modal = document.querySelector(".media-modal");
-  if (modal) {
-    document.body.removeChild(modal);
-    document.body.style.overflow = "auto";
-  }
-};
 
 // Initialize posts manager
 document.addEventListener("DOMContentLoaded", () => {
   window.postsManager = new EnhancedPostsManager();
 });
+
+// Add enhanced styles for posts
+const postsStyles = document.createElement("style");
+postsStyles.textContent = `
+    .posts-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .posts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .posts-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .posts-navigation {
+        display: flex;
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 5px;
+        margin-bottom: 30px;
+        border: 2px solid var(--border-color);
+        overflow-x: auto;
+        gap: 5px;
+    }
+
+    .nav-tab {
+        background: transparent;
+        color: var(--text-dark);
+        border: none;
+        padding: 15px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        min-width: 120px;
+    }
+
+    .nav-tab:hover {
+        background: var(--bg-dark);
+        color: var(--text-light);
+    }
+
+    .nav-tab.active {
+        background: var(--secondary-color);
+        color: white;
+        box-shadow: 0 3px 10px rgba(37, 117, 252, 0.3);
+    }
+
+    .posts-section {
+        display: none;
+    }
+
+    .posts-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .create-post-enhanced {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .create-post-enhanced h3 {
+        color: var(--text-light);
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 1.8rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--text-light);
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .required {
+        color: #e74c3c;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--bg-dark);
+        color: var(--text-light);
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        border-color: var(--secondary-color);
+        outline: none;
+        box-shadow: 0 0 10px rgba(37, 117, 252, 0.2);
+    }
+
+    .char-count {
+        display: block;
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--text-dark);
+        margin-top: 5px;
+    }
+
+    .media-upload-enhanced {
+        border: 2px dashed var(--border-color);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .upload-area {
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--bg-dark);
+    }
+
+    .upload-area:hover, .upload-area.drag-over {
+        border-color: var(--secondary-color);
+        background: rgba(37, 117, 252, 0.1);
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    .upload-text {
+        color: var(--text-light);
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .upload-hint {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    .media-preview-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 20px;
+        background: var(--card-bg);
+    }
+
+    .media-preview-item {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+    }
+
+    .media-preview-item img, .media-preview-item video {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+
+    .media-info {
+        padding: 10px;
+    }
+
+    .media-name {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-light);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+    }
+
+    .media-size {
+        font-size: 0.7rem;
+        color: var(--text-dark);
+    }
+
+    .remove-media {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-light);
+        cursor: pointer;
+        font-weight: normal;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+    }
+
+    .posts-filter {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .filter-btn {
+        background: var(--card-bg);
+        color: var(--text-dark);
+        border: 2px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+        color: white;
+    }
+
+    .filter-btn.active {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+        color: white;
+    }
+
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 25px;
+    }
+
+    .post-card.enhanced {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .post-card.enhanced:hover {
+        border-color: var(--secondary-color);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .author-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .author-details h4 {
+        color: var(--text-light);
+        margin: 0 0 5px 0;
+    }
+
+    .post-date {
+        font-size: 0.9rem;
+        color: var(--text-dark);
+    }
+
+    .monetized-badge {
+        background: var(--accent-color);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .post-content h3 {
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+    }
+
+    .post-content p {
+        color: var(--text-dark);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .post-media {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .post-media img, .post-media video {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .post-media img:hover, .post-media video:hover {
+        transform: scale(1.02);
+    }
+
+    .post-tags {
+        margin-bottom: 20px;
+    }
+
+    .tag {
+        background: var(--secondary-color);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        display: inline-block;
+    }
+
+    .post-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 15px;
+    }
+
+    .stats-left {
+        display: flex;
+        gap: 20px;
+    }
+
+    .stat-item {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    .earnings {
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: var(--bg-dark);
+        color: var(--text-light);
+        border: 1px solid var(--border-color);
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+        color: white;
+    }
+
+    .gift-btn {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-dark);
+        grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        color: var(--text-light);
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        margin-bottom: 25px;
+    }
+
+    /* Campaign Packages */
+    .campaign-packages {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .package-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .package-card:hover {
+        border-color: var(--secondary-color);
+        transform: translateY(-5px);
+    }
+
+    .package-card.popular {
+        border-color: var(--accent-color);
+        position: relative;
+    }
+
+    .package-card.popular::before {
+        content: "MOST POPULAR";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--accent-color);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .package-header h4 {
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+    }
+
+    .package-price {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+        margin-bottom: 20px;
+    }
+
+    .package-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .package-features li {
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        padding-left: 25px;
+        position: relative;
+    }
+
+    /* Monetization Stats */
+    .monetization-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .monetization-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .option-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .option-card h4 {
+        color: var(--text-light);
+        margin-bottom: 15px;
+    }
+
+    .option-card p {
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+
+    .withdrawal-section {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 25px;
+    }
+
+    .withdrawal-form {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .withdrawal-form input, .withdrawal-form select {
+        padding: 10px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--bg-dark);
+        color: var(--text-light);
+    }
+
+    /* Media Viewer */
+    .media-viewer-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    }
+
+    .media-viewer-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+
+    .close-viewer {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.5);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Analytics */
+    .analytics-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .metric-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .metric-card h4 {
+        color: var(--text-light);
+        margin-bottom: 20px;
+    }
+
+    .top-posts {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        padding: 25px;
+    }
+
+    .top-post-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: var(--bg-dark);
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .post-rank {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        min-width: 40px;
+    }
+
+    .post-info h5 {
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+
+    .post-metrics {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .posts-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .posts-actions {
+            justify-content: center;
+        }
+
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .campaign-packages {
+            grid-template-columns: 1fr;
+        }
+
+        .withdrawal-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .analytics-overview {
+            grid-template-columns: 1fr;
+        }
+
+        .nav-tab {
+            min-width: 100px;
+            padding: 10px 15px;
+        }
+    }
+`;
+document.head.appendChild(postsStyles);
