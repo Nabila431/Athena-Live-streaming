@@ -29,9 +29,17 @@
           <a href="Auth.html" id="loginRegisterBtn" class="btn"
             >Login / Daftar</a
           >
-          <button id="logoutBtn" class="btn" style="display: none">
-            Logout
-          </button>
+          <div class="user-info" style="display: none" id="userInfo">
+            <img
+              id="userAvatar"
+              class="nav-user-avatar"
+              style="display: none"
+            />
+            <span id="userName" style="display: none"></span>
+            <button id="logoutBtn" class="btn" style="display: none">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -120,7 +128,7 @@
       </div>
     </footer>
 
-    <script src="js/auth-simple.js"></script>
+    <script src="js/auth-enhanced.js"></script>
     <script>
       // Enhanced home page functionality
       document.addEventListener("DOMContentLoaded", () => {
