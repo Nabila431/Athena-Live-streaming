@@ -700,29 +700,6 @@ class ShopManager {
     this.processRealMoneyPurchase(item, quantity);
   }
 
-  processVirtualPurchase(item, quantity) {
-    const balance = this.getUserBalance();
-    const totalCost = item.cost * quantity;
-
-    if (item.currency === "coins" && balance.coins >= totalCost) {
-      balance.coins -= totalCost;
-      this.updateUserBalance(balance);
-      this.addPurchaseToHistory(item, quantity, "approved");
-      this.showPurchaseSuccess("Virtual item berhasil dibeli!");
-    } else if (item.currency === "diamonds" && balance.diamonds >= totalCost) {
-      balance.diamonds -= totalCost;
-      this.updateUserBalance(balance);
-      this.addPurchaseToHistory(item, quantity, "approved");
-      this.showPurchaseSuccess("Virtual item berhasil dibeli!");
-    } else {
-      alert("Saldo tidak mencukupi!");
-      return;
-    }
-
-    document.getElementById("purchaseModal").style.display = "none";
-    this.loadPurchaseHistory();
-  }
-
   processRealMoneyPurchase(item, quantity) {
     const totalPrice = item.price * quantity;
     const paymentMethod = document.querySelector(".payment-btn.active").dataset
