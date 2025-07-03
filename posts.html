@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts - Nabila Stream</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="studio.html">Studio</a></li>
+            <li><a href="posts.html" class="active">Posts</a></li>
+            <li><a href="chat.html">Chat</a></li>
+            <li><a href="profile.html">Profil</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="posts-container container">
+      <h2>📝 Posts & Upload</h2>
+
+      <!-- Create Post Section -->
+      <section class="create-post-section">
+        <div class="create-post-box">
+          <h3>✨ Buat Post Baru</h3>
+          <div id="postMessage" class="alert" style="display: none"></div>
+
+          <form id="createPostForm">
+            <div class="form-group">
+              <label for="postTitle">Judul Post</label>
+              <input
+                type="text"
+                id="postTitle"
+                placeholder="Masukkan judul menarik..."
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="postContent">Konten</label>
+              <textarea
+                id="postContent"
+                rows="4"
+                placeholder="Tulis konten Anda di sini..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="postImage">Upload Gambar/Video</label>
+              <input type="file" id="postImage" accept="image/*,video/*" />
+              <div
+                id="imagePreview"
+                class="image-preview"
+                style="display: none"
+              >
+                <img
+                  id="previewImg"
+                  src=""
+                  alt="Preview"
+                  style="
+                    max-width: 200px;
+                    max-height: 200px;
+                    border-radius: 8px;
+                  "
+                />
+                <button type="button" id="removeImage" class="btn-small">
+                  Hapus
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="postTags">Tags (pisahkan dengan koma)</label>
+              <input
+                type="text"
+                id="postTags"
+                placeholder="streaming, gaming, music"
+              />
+            </div>
+
+            <button type="submit" class="btn">📤 Posting</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Posts Feed -->
+      <section class="posts-feed">
+        <h3>📰 Feed Posts</h3>
+        <div class="posts-filter">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="my">Post Saya</button>
+          <button class="filter-btn" data-filter="popular">Populer</button>
+        </div>
+
+        <div id="postsContainer" class="posts-grid">
+          <!-- Posts akan dimuat di sini -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/auth-simple.js"></script>
+    <script src="js/posts.js"></script>
+    <script>
+      // Setup logout button
+      document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogout);
+        }
+      });
+    </script>
+  </body>
+</html>
