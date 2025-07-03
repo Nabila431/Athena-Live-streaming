@@ -282,7 +282,7 @@
               </div>
             </div>
             <div class="stat-card revenue">
-              <div class="stat-icon">💰</div>
+              <div class="stat-icon">����</div>
               <div class="stat-info">
                 <div class="stat-number" id="campaignRevenue">Rp 0</div>
                 <div class="stat-label">Campaign Revenue</div>
@@ -642,9 +642,95 @@
       </div>
     </div>
 
+    <!-- AI Admin Bot -->
+    <div id="aiAdminBot" class="ai-admin-bot">
+      <div class="bot-toggle" id="botToggle">
+        <div class="bot-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face"
+            alt="AI Admin"
+            class="bot-photo"
+          />
+        </div>
+        <div class="bot-info">
+          <span class="bot-name">AI Admin Assistant</span>
+          <span class="bot-status">🟢 Online 24/7</span>
+        </div>
+        <div class="bot-notification" id="botNotification">3</div>
+      </div>
+
+      <div class="bot-chat" id="botChat" style="display: none">
+        <div class="bot-chat-header">
+          <div class="bot-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Admin"
+              class="bot-header-photo"
+            />
+            <div>
+              <h4>🤖 AI Admin Assistant</h4>
+              <span class="bot-subtitle">Advanced Management Support</span>
+            </div>
+          </div>
+          <button id="closeBotChat">&times;</button>
+        </div>
+
+        <div class="bot-chat-messages" id="botMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Admin"
+              />
+            </div>
+            <div class="message-content">
+              <p>🎉 Welcome to the Admin Panel! I'm your AI Assistant.</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>📊 Real-time analytics</li>
+                <li>🔔 System notifications</li>
+                <li>💰 Revenue tracking</li>
+                <li>👥 User management</li>
+                <li>📢 Campaign optimization</li>
+              </ul>
+              <p>How can I assist you today?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bot-quick-actions">
+          <button class="quick-action-btn" data-action="revenue">
+            💰 Revenue Report
+          </button>
+          <button class="quick-action-btn" data-action="users">
+            👥 User Stats
+          </button>
+          <button class="quick-action-btn" data-action="campaigns">
+            📢 Campaigns
+          </button>
+          <button class="quick-action-btn" data-action="alerts">
+            🔔 Alerts
+          </button>
+        </div>
+
+        <div class="bot-chat-input">
+          <input
+            type="text"
+            id="botInput"
+            placeholder="Ask me anything about admin tasks..."
+          />
+          <button id="sendBotMessage">Send</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="main-footer">
       <div class="container">
         <p>&copy; 2025 Nabila Stream Admin Panel. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark)">
+          🤖 Powered by AI Admin Assistant • 📊 Real-time Management • 🔒 Secure
+          Access
+        </p>
       </div>
     </footer>
 
