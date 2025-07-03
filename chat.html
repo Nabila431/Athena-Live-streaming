@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat - Nabila Stream</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html" class="active">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="chat-container">
+      <div class="chat-layout">
+        <!-- Chat Sidebar -->
+        <aside class="chat-sidebar">
+          <div class="chat-header">
+            <h3>💬 Chat & Messenger</h3>
+            <button id="newChatBtn" class="btn-small">+ Chat Baru</button>
+          </div>
+
+          <!-- Online Users -->
+          <div class="online-users">
+            <h4>🟢 Online Sekarang</h4>
+            <div id="onlineUsersList" class="users-list">
+              <!-- Online users akan dimuat di sini -->
+            </div>
+          </div>
+
+          <!-- Chat Rooms -->
+          <div class="chat-rooms">
+            <h4>🏠 Room Chat</h4>
+            <div class="room-list">
+              <div class="room-item active" data-room="general">
+                <span>🌟</span>
+                <div>
+                  <strong>General</strong>
+                  <small>Chat umum untuk semua</small>
+                </div>
+              </div>
+              <div class="room-item" data-room="gaming">
+                <span>🎮</span>
+                <div>
+                  <strong>Gaming</strong>
+                  <small>Diskusi tentang game</small>
+                </div>
+              </div>
+              <div class="room-item" data-room="music">
+                <span>🎵</span>
+                <div>
+                  <strong>Music</strong>
+                  <small>Berbagi musik favorit</small>
+                </div>
+              </div>
+              <div class="room-item" data-room="tech">
+                <span>💻</span>
+                <div>
+                  <strong>Tech Talk</strong>
+                  <small>Teknologi dan streaming</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Chats -->
+          <div class="recent-chats">
+            <h4>📝 Chat Terbaru</h4>
+            <div id="recentChatsList" class="recent-list">
+              <!-- Recent chats akan dimuat di sini -->
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <section class="chat-main">
+          <div class="chat-main-header">
+            <div class="current-chat-info">
+              <h3 id="currentChatTitle">🌟 General Chat</h3>
+              <span id="currentChatDescription"
+                >Chat umum untuk semua member</span
+              >
+            </div>
+            <div class="chat-actions">
+              <button id="chatSettingsBtn" class="btn-icon">⚙️</button>
+              <button id="chatInfoBtn" class="btn-icon">ℹ️</button>
+            </div>
+          </div>
+
+          <!-- Messages Area -->
+          <div id="messagesContainer" class="messages-container">
+            <!-- Messages akan dimuat di sini -->
+          </div>
+
+          <!-- Message Input -->
+          <div class="message-input-area">
+            <div id="chatMessage" class="alert" style="display: none"></div>
+            <form id="messageForm" class="message-form">
+              <button type="button" id="attachBtn" class="btn-icon">📎</button>
+              <button type="button" id="emojiBtn" class="btn-icon">😀</button>
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Ketik pesan Anda..."
+                disabled
+              />
+              <button type="submit" id="sendBtn" class="btn" disabled>
+                Kirim
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/chat-enhanced.js"></script>
+    <script>
+      // Setup logout button
+      document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogout);
+        }
+      });
+    </script>
+  </body>
+</html>

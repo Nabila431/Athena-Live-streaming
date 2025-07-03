@@ -1,67 +1,203 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login / Daftar - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                 <a href="auth.html" id="loginRegisterBtn" class="btn" style="display: none;">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a
+            href="auth.html"
+            id="loginRegisterBtn"
+            class="btn"
+            style="display: none"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="auth-container">
-        <div class="auth-box">
-            <h2 id="authTitle">Login</h2>
-            <div id="authMessage" class="alert" style="display: none;"></div>
-
-            <form id="authForm">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="email@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Minimal 6 karakter" required>
-                </div>
-                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                    <label for="confirmPassword">Konfirmasi Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Ulangi password" required>
-                </div>
-                <button type="submit" class="btn" id="authSubmitBtn">Login</button>
-            </form>
-            <p id="toggleAuth">Belum punya akun? <a href="#" id="showRegister">Daftar Sekarang</a></p>
+      <div class="auth-box">
+        <div
+          class="welcome-message"
+          style="
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-light);
+          "
+        >
+          <p>🎥 Selamat datang di Nabila Stream!</p>
+          <p style="font-size: 0.9rem; color: var(--text-dark)">
+            Login atau daftar untuk mulai streaming
+          </p>
         </div>
+        <div id="authMessage" class="alert" style="display: none"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+          <h2>Login</h2>
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="email@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Minimal 6 karakter"
+              required
+            />
+          </div>
+          <button type="submit" class="btn">Login</button>
+          <p>
+            Belum punya akun?
+            <a href="#" id="authSwitchRegister">Daftar Sekarang</a>
+          </p>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" style="display: none">
+          <h2>Daftar</h2>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input
+              type="email"
+              id="registerEmail"
+              placeholder="email@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input
+              type="password"
+              id="registerPassword"
+              placeholder="Minimal 6 karakter"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerConfirmPassword">Konfirmasi Password</label>
+            <input
+              type="password"
+              id="registerConfirmPassword"
+              placeholder="Ulangi password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn">Daftar</button>
+          <p>
+            Sudah punya akun?
+            <a href="#" id="authSwitchLogin">Login Sekarang</a>
+          </p>
+        </form>
+      </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
         </div>
+        <div class="support-info">
+          <span class="support-name">Registration Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Registration Assistant</h4>
+              <span class="chat-subtitle">Login & Registration Help</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>🔐 Welcome to Nabila Stream!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>🔑 Creating your account</li>
+                <li>🔐 Login troubleshooting</li>
+                <li>📧 Password recovery</li>
+                <li>👤 Profile setup</li>
+                <li>🎉 Getting started guide</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about registration..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/main.js"></script>
-    <script src="js/auth.js"></script>
-</body>
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/ai-support.js"></script>
+  </body>
 </html>
-
-

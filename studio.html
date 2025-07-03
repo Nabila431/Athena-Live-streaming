@@ -1,86 +1,212 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Studio - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html" class="active">Studio</a></li>
-                    <li><a href="profile.html">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html" class="active">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="studio-container container">
-        <h2>Mulai Live Streaming Anda</h2>
-        <div id="studioMessage" class="alert" style="display: none;"></div>
+      <h2>Mulai Live Streaming Anda</h2>
+      <div id="studioMessage" class="alert" style="display: none"></div>
 
-        <section class="studio-form-section">
-            <h3>Informasi Live Stream Anda</h3>
-            <form id="streamForm">
-                <div class="form-group">
-                    <label for="streamTitleInput">Judul Stream</label>
-                    <input type="text" id="streamTitleInput" placeholder="Contoh: Bermain Game Seru!" required>
-                </div>
-                <div class="form-group">
-                    <label for="streamDescriptionInput">Deskripsi Stream</label>
-                    <textarea id="streamDescriptionInput" placeholder="Ceritakan apa yang akan Anda lakukan di stream ini..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="streamThumbnailInput">URL Thumbnail (Opsional)</label>
-                    <input type="text" id="streamThumbnailInput" placeholder="URL gambar thumbnail Anda">
-                </div>
-                <button type="submit" class="btn" id="createStreamBtn">Buat Live Stream</button>
-            </form>
+      <section class="studio-form-section">
+        <h3>Informasi Live Stream Anda</h3>
+        <form id="streamForm">
+          <div class="form-group">
+            <label for="streamTitleInput">Judul Stream</label>
+            <input
+              type="text"
+              id="streamTitleInput"
+              placeholder="Contoh: Bermain Game Seru!"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="streamDescriptionInput">Deskripsi Stream</label>
+            <textarea
+              id="streamDescriptionInput"
+              placeholder="Ceritakan apa yang akan Anda lakukan di stream ini..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="streamThumbnailInput">URL Thumbnail (Opsional)</label>
+            <input
+              type="text"
+              id="streamThumbnailInput"
+              placeholder="URL gambar thumbnail Anda"
+            />
+          </div>
+          <button type="submit" class="btn" id="createStreamBtn">
+            Buat Live Stream
+          </button>
+        </form>
 
-            <div id="streamInfo" style="display: none; margin-top: 30px;">
-                <h3>Detail Stream Anda</h3>
-                <p><strong>Stream Key:</strong> <code id="streamKey"></code> <button class="btn btn-small" onclick="copyToClipboard('streamKey')">Salin</button></p>
-                <p><strong>RTMP URL:</strong> <code id="rtmpUrl"></code> <button class="btn btn-small" onclick="copyToClipboard('rtmpUrl')">Salin</button></p>
-                <p style="color: var(--text-dark); font-size: 0.9rem; margin-top: 15px;">Gunakan Stream Key dan RTMP URL ini di OBS Studio atau software broadcasting lainnya untuk memulai live Anda.</p>
-                <button class="btn" id="endStreamBtn" style="background-color: #e74c3c; margin-top: 20px;">Akhiri Live</button>
-            </div>
-        </section>
+        <div id="streamInfo" style="display: none; margin-top: 30px">
+          <h3>Detail Stream Anda</h3>
+          <p>
+            <strong>Stream Key:</strong> <code id="streamKey"></code>
+            <button
+              class="btn btn-small"
+              onclick="copyToClipboard('streamKey')"
+            >
+              Salin
+            </button>
+          </p>
+          <p>
+            <strong>RTMP URL:</strong> <code id="rtmpUrl"></code>
+            <button class="btn btn-small" onclick="copyToClipboard('rtmpUrl')">
+              Salin
+            </button>
+          </p>
+          <p
+            style="color: var(--text-dark); font-size: 0.9rem; margin-top: 15px"
+          >
+            Gunakan Stream Key dan RTMP URL ini di OBS Studio atau software
+            broadcasting lainnya untuk memulai live Anda.
+          </p>
+          <button
+            class="btn"
+            id="endStreamBtn"
+            style="background-color: #e74c3c; margin-top: 20px"
+          >
+            Akhiri Live
+          </button>
+        </div>
+      </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
         </div>
+        <div class="support-info">
+          <span class="support-name">Streaming Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Streaming Assistant</h4>
+              <span class="chat-subtitle">Live Streaming Support</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>🎬 Welcome to the Studio!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>🔧 Setting up your live stream</li>
+                <li>📺 OBS and streaming software</li>
+                <li>🎥 Stream quality optimization</li>
+                <li>💡 Content creation tips</li>
+                <li>📊 Audience engagement</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about streaming setup..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/main.js"></script>
-    <script src="js/studio.js"></script>
+    <script src="js/auth-simple.js"></script>
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/live-streaming-enhanced.js"></script>
+    <script src="js/ai-support.js"></script>
     <script>
-        // Helper function to copy text to clipboard
-        function copyToClipboard(elementId) {
-            const el = document.getElementById(elementId);
-            const text = el.innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Berhasil disalin: ' + text);
-            }).catch(err => {
-                console.error('Gagal menyalin:', err);
-                alert('Gagal menyalin. Silakan salin manual.');
-            });
+      // Setup logout button and auth check
+      document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogout);
         }
+      });
     </script>
-</body>
+    <script>
+      // Helper function to copy text to clipboard
+      function copyToClipboard(elementId) {
+        const el = document.getElementById(elementId);
+        const text = el.innerText;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            alert("Berhasil disalin: " + text);
+          })
+          .catch((err) => {
+            console.error("Gagal menyalin:", err);
+            alert("Gagal menyalin. Silakan salin manual.");
+          });
+      }
+    </script>
+  </body>
 </html>

@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts - Nabila Stream</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/shop-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html" class="active">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <div class="user-info" style="display: none" id="userInfo">
+            <img
+              id="userAvatar"
+              class="nav-user-avatar"
+              style="display: none"
+            />
+            <span id="userName" style="display: none"></span>
+            <button id="logoutBtn" class="btn" style="display: none">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="posts-container container">
+      <div class="posts-header">
+        <h2>📝 Posts & Content Creation</h2>
+        <div class="posts-actions">
+          <button id="createPostBtn" class="btn primary">➕ Create Post</button>
+          <button id="monetizeBtn" class="btn secondary">
+            💰 Monetize Content
+          </button>
+          <button id="creatorProgramBtn" class="btn accent">
+            🌟 Join Creator Program
+          </button>
+        </div>
+      </div>
+
+      <!-- Posts Navigation -->
+      <div class="posts-navigation">
+        <button class="nav-tab active" data-tab="feed">📰 Feed</button>
+        <button class="nav-tab" data-tab="create">✨ Create</button>
+        <button class="nav-tab" data-tab="monetize">💰 Monetize</button>
+        <button class="nav-tab" data-tab="campaign">📢 Campaign</button>
+        <button class="nav-tab" data-tab="analytics">📊 Analytics</button>
+      </div>
+
+      <!-- Feed Tab -->
+      <section id="feed-tab" class="posts-section active">
+        <div class="posts-filter">
+          <button class="filter-btn active" data-filter="all">🌟 Semua</button>
+          <button class="filter-btn" data-filter="my">👤 Post Saya</button>
+          <button class="filter-btn" data-filter="popular">🔥 Populer</button>
+          <button class="filter-btn" data-filter="trending">📈 Trending</button>
+          <button class="filter-btn" data-filter="monetized">
+            💰 Monetized
+          </button>
+        </div>
+
+        <div id="postsContainer" class="posts-grid">
+          <!-- Posts akan dimuat di sini -->
+        </div>
+      </section>
+
+      <!-- Create Tab -->
+      <section id="create-tab" class="posts-section">
+        <div class="create-post-enhanced">
+          <h3>✨ Create Amazing Content</h3>
+          <div id="postMessage" class="alert" style="display: none"></div>
+
+          <form id="createPostForm" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="postTitle"
+                >Post Title <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                id="postTitle"
+                placeholder="Enter an engaging title..."
+                required
+                maxlength="100"
+              />
+              <small class="char-count">0/100 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label for="postContent"
+                >Content <span class="required">*</span></label
+              >
+              <textarea
+                id="postContent"
+                rows="6"
+                placeholder="Share your thoughts, ideas, or story..."
+                required
+                maxlength="2000"
+              ></textarea>
+              <small class="char-count">0/2000 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label>Media Upload</label>
+              <div class="media-upload-enhanced">
+                <input
+                  type="file"
+                  id="postMedia"
+                  accept="image/*,video/*"
+                  multiple
+                  style="display: none"
+                />
+                <div class="upload-area" id="uploadArea">
+                  <div class="upload-icon">📎</div>
+                  <div class="upload-text">Click or drag to upload media</div>
+                  <div class="upload-hint">Images & Videos up to 50MB each</div>
+                </div>
+                <div
+                  class="media-preview-container"
+                  id="mediaPreviewContainer"
+                ></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="postCategory">Category</label>
+              <select id="postCategory">
+                <option value="general">🌟 General</option>
+                <option value="gaming">🎮 Gaming</option>
+                <option value="music">🎵 Music</option>
+                <option value="art">🎨 Art & Design</option>
+                <option value="technology">💻 Technology</option>
+                <option value="lifestyle">✨ Lifestyle</option>
+                <option value="education">📚 Education</option>
+                <option value="entertainment">🎭 Entertainment</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="postTags">Tags</label>
+              <input
+                type="text"
+                id="postTags"
+                placeholder="streaming, gaming, music (comma separated)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="enableMonetization" />
+                💰 Enable monetization for this post
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="saveDraft" class="btn secondary">
+                💾 Save Draft
+              </button>
+              <button type="submit" class="btn primary">📤 Publish Post</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Monetize Tab -->
+      <section id="monetize-tab" class="posts-section">
+        <div class="monetization-center">
+          <h3>💰 Content Monetization Center</h3>
+
+          <div class="monetization-stats">
+            <div class="stat-card">
+              <div class="stat-icon">💵</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalEarnings">Rp 0</div>
+                <div class="stat-label">Total Earnings</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👁️</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalViews">0</div>
+                <div class="stat-label">Total Views</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalLikes">0</div>
+                <div class="stat-label">Total Likes</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="monetization-options">
+            <div class="option-card">
+              <h4>🎯 Sponsored Posts</h4>
+              <p>Partner with brands for sponsored content</p>
+              <button class="btn primary">Learn More</button>
+            </div>
+            <div class="option-card">
+              <h4>💎 Premium Content</h4>
+              <p>Create exclusive content for paying subscribers</p>
+              <button class="btn primary">Setup Premium</button>
+            </div>
+            <div class="option-card">
+              <h4>🎁 Fan Support</h4>
+              <p>Receive gifts and donations from fans</p>
+              <button class="btn primary">Enable Gifts</button>
+            </div>
+          </div>
+
+          <div class="withdrawal-section">
+            <h4>💳 Request Withdrawal</h4>
+            <div class="withdrawal-form">
+              <input
+                type="number"
+                placeholder="Amount (min Rp 50,000)"
+                id="withdrawAmount"
+              />
+              <select id="withdrawMethod">
+                <option value="gopay">GoPay</option>
+                <option value="bank">Bank Transfer</option>
+                <option value="dana">DANA</option>
+              </select>
+              <button class="btn primary" id="requestWithdraw">
+                Request Withdrawal
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaign Tab -->
+      <section id="campaign-tab" class="posts-section">
+        <div class="campaign-center">
+          <h3>📢 Campaign & Boost Center</h3>
+          <p>Boost your content visibility and reach more audience!</p>
+
+          <div class="campaign-packages">
+            <div class="package-card">
+              <div class="package-header">
+                <h4>🚀 Basic Boost</h4>
+                <div class="package-price">Rp 500</div>
+              </div>
+              <ul class="package-features">
+                <li>✅ 24-hour boost</li>
+                <li>✅ +100 impressions</li>
+                <li>✅ Featured in timeline</li>
+              </ul>
+              <button class="btn primary" data-package="basic" data-price="500">
+                Select Package
+              </button>
+            </div>
+
+            <div class="package-card popular">
+              <div class="package-header">
+                <h4>⭐ Popular Boost</h4>
+                <div class="package-price">Rp 2,500</div>
+              </div>
+              <ul class="package-features">
+                <li>✅ 7-day boost</li>
+                <li>✅ +1,000 impressions</li>
+                <li>✅ Featured in trending</li>
+                <li>✅ Cross-platform promotion</li>
+              </ul>
+              <button
+                class="btn primary"
+                data-package="popular"
+                data-price="2500"
+              >
+                Select Package
+              </button>
+            </div>
+
+            <div class="package-card">
+              <div class="package-header">
+                <h4>💎 Premium Boost</h4>
+                <div class="package-price">Rp 10,000</div>
+              </div>
+              <ul class="package-features">
+                <li>✅ 30-day boost</li>
+                <li>✅ +10,000 impressions</li>
+                <li>✅ Priority placement</li>
+                <li>✅ Analytics dashboard</li>
+                <li>✅ Dedicated support</li>
+              </ul>
+              <button
+                class="btn primary"
+                data-package="premium"
+                data-price="10000"
+              >
+                Select Package
+              </button>
+            </div>
+
+            <div class="package-card">
+              <div class="package-header">
+                <h4>🏆 Ultimate Boost</h4>
+                <div class="package-price">Rp 100,000</div>
+              </div>
+              <ul class="package-features">
+                <li>✅ 90-day boost</li>
+                <li>✅ +100,000 impressions</li>
+                <li>✅ Homepage feature</li>
+                <li>✅ Influencer program access</li>
+                <li>✅ Personal account manager</li>
+                <li>✅ Custom campaign strategy</li>
+              </ul>
+              <button
+                class="btn primary"
+                data-package="ultimate"
+                data-price="100000"
+              >
+                Select Package
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Tab -->
+      <section id="analytics-tab" class="posts-section">
+        <div class="analytics-dashboard">
+          <h3>📊 Content Analytics</h3>
+
+          <div class="analytics-overview">
+            <div class="metric-card">
+              <h4>📈 Performance</h4>
+              <canvas id="performanceChart" width="300" height="150"></canvas>
+            </div>
+            <div class="metric-card">
+              <h4>👥 Audience</h4>
+              <canvas id="audienceChart" width="300" height="150"></canvas>
+            </div>
+          </div>
+
+          <div class="top-posts">
+            <h4>🏆 Top Performing Posts</h4>
+            <div id="topPostsList">
+              <!-- Top posts will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Campaign Purchase Modal -->
+    <div id="campaignModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>📢 Campaign Boost</h2>
+        </div>
+        <div class="modal-body">
+          <div class="campaign-summary" id="campaignSummary">
+            <!-- Campaign details will be shown here -->
+          </div>
+          <div class="payment-method">
+            <h4>💳 Payment Method</h4>
+            <div class="payment-info">
+              <p><strong>GoPay Admin:</strong> 0895340205302</p>
+              <p><strong>WhatsApp Confirm:</strong> 085810526151</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelCampaign" class="btn secondary">Cancel</button>
+          <button id="confirmCampaign" class="btn primary">
+            Proceed to Payment
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Creator Program Modal -->
+    <div id="creatorModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>🌟 Creator Program Application</h2>
+        </div>
+        <div class="modal-body">
+          <form id="creatorApplicationForm">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="creatorName" required />
+            </div>
+            <div class="form-group">
+              <label>Content Category</label>
+              <select id="creatorCategory" required>
+                <option value="">Select Category</option>
+                <option value="gaming">🎮 Gaming</option>
+                <option value="music">🎵 Music</option>
+                <option value="art">🎨 Art & Design</option>
+                <option value="education">📚 Education</option>
+                <option value="lifestyle">✨ Lifestyle</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Why do you want to join?</label>
+              <textarea id="creatorReason" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Social Media Links</label>
+              <input
+                type="text"
+                id="creatorSocial"
+                placeholder="Instagram, YouTube, TikTok, etc."
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelCreator" class="btn secondary">Cancel</button>
+          <button id="submitCreator" class="btn primary">
+            Submit Application
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
+        </div>
+        <div class="support-info">
+          <span class="support-name">Content Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Content Assistant</h4>
+              <span class="chat-subtitle">Posts & Monetization Help</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>📝 Welcome to the content creation center!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>✨ Creating engaging posts</li>
+                <li>💰 Setting up monetization</li>
+                <li>📢 Running campaign boosts</li>
+                <li>📊 Analyzing post performance</li>
+                <li>🌟 Joining creator program</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about content creation..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/posts-enhanced.js"></script>
+    <script src="js/monetization.js"></script>
+    <script src="js/campaign.js"></script>
+    <script>
+      // Setup logout button
+      document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogout);
+        }
+      });
+    </script>
+  </body>
+</html>

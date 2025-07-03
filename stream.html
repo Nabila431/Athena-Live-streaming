@@ -1,81 +1,169 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="streamTitle">Live Stream - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
     <script src="https://unpkg.com/@mux/mux-player"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="container">
-        <section class="stream-header">
-            <h1 id="currentStreamTitle">Memuat Live Stream...</h1>
-            <div class="streamer-details">
-                <img id="streamerAvatar" src="https://via.placeholder.com/50" alt="Streamer Avatar">
-                <div>
-                    <span id="streamerName">Memuat Streamer...</span>
-                    <p id="streamDescription" style="color: var(--text-dark); font-size: 0.95rem;"></p>
-                </div>
-            </div>
-        </section>
+      <section class="stream-header">
+        <h1 id="currentStreamTitle">Memuat Live Stream...</h1>
+        <div class="streamer-details">
+          <img
+            id="streamerAvatar"
+            src="https://via.placeholder.com/50"
+            alt="Streamer Avatar"
+          />
+          <div>
+            <span id="streamerName">Memuat Streamer...</span>
+            <p
+              id="streamDescription"
+              style="color: var(--text-dark); font-size: 0.95rem"
+            ></p>
+          </div>
+        </div>
+      </section>
 
-        <section class="stream-content">
-            <div class="video-player-container">
-                <mux-player
-                    id="liveStreamPlayer"
-                    stream-type="live"
-                    playback-id=""
-                    preload="auto"
-                    controls
-                    autoplay
-                    muted
-                ></mux-player>
+      <section class="stream-content">
+        <div class="video-player-container">
+          <mux-player
+            id="liveStreamPlayer"
+            stream-type="live"
+            playback-id=""
+            preload="auto"
+            controls
+            autoplay
+            muted
+          ></mux-player>
+        </div>
+        <div class="chat-sidebar">
+          <div class="chat-header">Live Chat</div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+              <strong>Guest:</strong> Selamat datang di stream!
             </div>
-            <div class="chat-sidebar">
-                <div class="chat-header">Live Chat</div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-message"><strong>Guest:</strong> Selamat datang di stream!</div>
-                </div>
-                <form class="chat-input-form" id="chatForm">
-                    <input type="text" id="chatInput" placeholder="Ketik pesan Anda..." required>
-                    <button type="submit" class="btn">Kirim</button>
-                </form>
-            </div>
-        </section>
+          </div>
+          <form class="chat-input-form" id="chatForm">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Ketik pesan Anda..."
+              required
+            />
+            <button type="submit" class="btn">Kirim</button>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
         </div>
+        <div class="support-info">
+          <span class="support-name">Stream Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Stream Assistant</h4>
+              <span class="chat-subtitle">Live Stream Support</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>🔴 Enjoying the live stream?</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>💬 Chat features and commands</li>
+                <li>🎁 Sending virtual gifts</li>
+                <li>👥 Following the streamer</li>
+                <li>📱 Stream quality settings</li>
+                <li>🔔 Notifications and updates</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about stream features..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/main.js"></script>
     <script src="js/stream.js"></script>
-</body>
+    <script src="js/ai-support.js"></script>
+  </body>
 </html>
-
-

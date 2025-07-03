@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop - Virtual Items & Gifts | Nabila Stream</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/shop-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html" class="active">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <div class="user-wallet" id="userWallet" style="display: none">
+            <div class="wallet-info">
+              <span class="coin-balance"
+                >💎 <span id="coinBalance">0</span></span
+              >
+              <span class="diamond-balance"
+                >💍 <span id="diamondBalance">0</span></span
+              >
+            </div>
+            <button id="topUpBtn" class="btn top-up-btn">Top Up</button>
+          </div>
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <div class="user-info" style="display: none" id="userInfo">
+            <img
+              id="userAvatar"
+              class="nav-user-avatar"
+              style="display: none"
+            />
+            <span id="userName" style="display: none"></span>
+            <button id="logoutBtn" class="btn" style="display: none">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="shop-hero">
+        <div class="container">
+          <h1>🛍️ Virtual Shop</h1>
+          <p>
+            Beli coins, diamonds, dan virtual gifts untuk meningkatkan
+            pengalaman streaming Anda!
+          </p>
+
+          <div class="currency-display">
+            <div class="currency-card">
+              <div class="currency-icon">💎</div>
+              <div class="currency-info">
+                <h3>Coins</h3>
+                <div class="balance" id="userCoins">0</div>
+              </div>
+            </div>
+            <div class="currency-card">
+              <div class="currency-icon">💍</div>
+              <div class="currency-info">
+                <h3>Diamonds</h3>
+                <div class="balance" id="userDiamonds">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container">
+        <div class="shop-navigation">
+          <button class="shop-tab-btn active" data-tab="coins">💎 Coins</button>
+          <button class="shop-tab-btn" data-tab="diamonds">💍 Diamonds</button>
+          <button class="shop-tab-btn" data-tab="gifts">
+            🎁 Virtual Gifts
+          </button>
+          <button class="shop-tab-btn" data-tab="vip">👑 VIP Features</button>
+          <button class="shop-tab-btn" data-tab="emotes">😊 Emotes</button>
+        </div>
+
+        <!-- Coins Section -->
+        <div id="coins-tab" class="shop-section active">
+          <h2>💎 Beli Coins</h2>
+          <div class="items-grid" id="coinsGrid">
+            <!-- Coins packages will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Diamonds Section -->
+        <div id="diamonds-tab" class="shop-section">
+          <h2>💍 Beli Diamonds</h2>
+          <div class="items-grid" id="diamondsGrid">
+            <!-- Diamonds packages will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Virtual Gifts Section -->
+        <div id="gifts-tab" class="shop-section">
+          <h2>🎁 Virtual Gifts</h2>
+          <div class="items-grid" id="giftsGrid">
+            <!-- Virtual gifts will be loaded here -->
+          </div>
+        </div>
+
+        <!-- VIP Features Section -->
+        <div id="vip-tab" class="shop-section">
+          <h2>👑 VIP Features</h2>
+          <div class="items-grid" id="vipGrid">
+            <!-- VIP features will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Emotes Section -->
+        <div id="emotes-tab" class="shop-section">
+          <h2>😊 Custom Emotes</h2>
+          <div class="items-grid" id="emotesGrid">
+            <!-- Custom emotes will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Purchase History -->
+      <section class="container" style="margin-top: 50px">
+        <h2>📋 Purchase History</h2>
+        <div class="purchase-history" id="purchaseHistory">
+          <!-- Purchase history will be loaded here -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="modal">
+      <div class="modal-content purchase-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>🛒 Konfirmasi Pembelian</h2>
+        </div>
+        <div class="modal-body">
+          <div class="item-preview" id="itemPreview">
+            <!-- Item preview will be shown here -->
+          </div>
+          <div class="quantity-selector">
+            <label>Jumlah:</label>
+            <div class="quantity-controls">
+              <button id="decreaseQty">-</button>
+              <input type="number" id="quantity" value="1" min="1" max="999" />
+              <button id="increaseQty">+</button>
+            </div>
+          </div>
+          <div class="total-price">
+            <h3>Total: Rp <span id="totalPrice">0</span></h3>
+          </div>
+          <div class="payment-method">
+            <h4>Metode Pembayaran:</h4>
+            <div class="payment-options">
+              <button class="payment-btn active" data-method="gopay">
+                <img
+                  src="https://via.placeholder.com/40x20?text=GP"
+                  alt="GoPay"
+                />
+                GoPay
+              </button>
+              <button class="payment-btn" data-method="bank">
+                <img
+                  src="https://via.placeholder.com/40x20?text=BK"
+                  alt="Bank"
+                />
+                Transfer Bank
+              </button>
+            </div>
+          </div>
+          <div class="payment-details" id="paymentDetails">
+            <!-- Payment details will be shown here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelPurchase" class="btn secondary">Batal</button>
+          <button id="confirmPurchase" class="btn primary">
+            Checkout via WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Up Modal -->
+    <div id="topUpModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>💰 Top Up Balance</h2>
+        </div>
+        <div class="modal-body">
+          <div class="top-up-options">
+            <div class="top-up-card">
+              <h3>💎 Quick Coins</h3>
+              <div class="top-up-packages">
+                <button class="package-btn" data-amount="100" data-price="500">
+                  100 Coins - Rp 500
+                </button>
+                <button class="package-btn" data-amount="500" data-price="2500">
+                  500 Coins - Rp 2,500
+                </button>
+                <button
+                  class="package-btn"
+                  data-amount="1000"
+                  data-price="5000"
+                >
+                  1K Coins - Rp 5,000
+                </button>
+                <button
+                  class="package-btn"
+                  data-amount="2500"
+                  data-price="12000"
+                >
+                  2.5K Coins - Rp 12,000
+                </button>
+              </div>
+            </div>
+            <div class="top-up-card">
+              <h3>💍 Premium Diamonds</h3>
+              <div class="top-up-packages">
+                <button class="package-btn" data-amount="10" data-price="1500">
+                  10 Diamonds - Rp 1,500
+                </button>
+                <button class="package-btn" data-amount="50" data-price="7000">
+                  50 Diamonds - Rp 7,000
+                </button>
+                <button
+                  class="package-btn"
+                  data-amount="100"
+                  data-price="13000"
+                >
+                  100 Diamonds - Rp 13,000
+                </button>
+                <button
+                  class="package-btn"
+                  data-amount="250"
+                  data-price="30000"
+                >
+                  250 Diamonds - Rp 30,000
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark)">
+          💳 Secure payment with GoPay • Admin Support via WhatsApp
+        </p>
+      </div>
+    </footer>
+
+    <!-- AI Support Chat Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <span class="support-icon">🤖</span>
+        <span class="support-text">AI Support</span>
+        <span class="online-indicator"></span>
+      </div>
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <h4>🤖 AI Support Assistant</h4>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+              Halo! Saya AI Assistant Nabila Stream. Ada yang bisa saya bantu
+              tentang pembelian atau fitur platform?
+            </div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ketik pesan Anda..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/ai-support.js"></script>
+  </body>
+</html>

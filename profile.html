@@ -1,66 +1,1201 @@
-
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profil Saya - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/shop-styles.css" />
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html" class="active">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html" class="active">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <div class="user-wallet" id="userWallet" style="display: none">
+            <div class="wallet-info">
+              <span class="coin-balance"
+                >💎 <span id="coinBalance">0</span></span
+              >
+              <span class="diamond-balance"
+                >💍 <span id="diamondBalance">0</span></span
+              >
             </div>
+          </div>
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <div class="user-info" style="display: none" id="userInfo">
+            <img
+              id="userAvatar"
+              class="nav-user-avatar"
+              style="display: none"
+            />
+            <span id="userName" style="display: none"></span>
+            <button id="logoutBtn" class="btn" style="display: none">
+              Logout
+            </button>
+          </div>
         </div>
+      </div>
     </header>
 
     <main class="profile-container container">
-        <div class="profile-header">
-            <img id="profileAvatar" src="https://via.placeholder.com/120" alt="Profile Avatar" class="profile-avatar">
-            <h1 id="profileName">Memuat Nama...</h1>
-            <p id="profileBio">Memuat Bio...</p>
+      <!-- Profile Header -->
+      <div class="profile-header-enhanced">
+        <div class="profile-cover">
+          <img
+            id="profileCover"
+            src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1200&h=300&fit=crop"
+            alt="Cover Photo"
+            class="cover-photo"
+          />
+          <button id="editCoverBtn" class="edit-cover-btn">
+            📷 Ubah Cover
+          </button>
+          <input
+            type="file"
+            id="coverInput"
+            accept="image/*"
+            style="display: none"
+          />
         </div>
 
-        <section class="profile-info">
-            <h3>Informasi Akun</h3>
-            <div class="profile-details">
-                <p><strong>Email:</strong> <span id="profileEmail">memuat@email.com</span></p>
-                <p><strong>Bergabung Sejak:</strong> <span id="profileJoinedDate">Memuat tanggal...</span></p>
-                </div>
-            <button id="editProfileBtn" class="btn" style="margin-top: 20px;">Edit Profil</button>
-        </section>
+        <div class="profile-info-main">
+          <div class="profile-avatar-section">
+            <img
+              id="profileAvatar"
+              src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face"
+              alt="Profile Avatar"
+              class="profile-avatar-large"
+            />
+            <button id="editAvatarBtn" class="edit-avatar-btn">📷</button>
+            <input
+              type="file"
+              id="avatarInput"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
 
-        <section style="margin-top: 50px;">
-            <h2>Video Saya</h2>
-            <div class="stream-grid" id="myVideosContainer">
-                <p style="text-align: center; color: var(--text-dark);">Anda belum mengunggah video apapun.</p>
-                </div>
-        </section>
+          <div class="profile-details-main">
+            <h1 id="profileName">Nama User</h1>
+            <p id="profileBio">
+              Bio pengguna akan ditampilkan di sini. Klik Edit Profil untuk
+              mengubahnya.
+            </p>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="profilePostsCount">0</span>
+                <span class="stat-label">Posts</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileFollowersCount">125</span>
+                <span class="stat-label">Followers</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileFollowingCount">89</span>
+                <span class="stat-label">Following</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileStreamsCount">0</span>
+                <span class="stat-label">Streams</span>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button id="editProfileBtn" class="btn primary">
+                ✏️ Edit Profil
+              </button>
+              <button id="createPostBtn" class="btn secondary">
+                📝 Buat Post
+              </button>
+              <button id="shareProfileBtn" class="btn accent">
+                🔗 Share Profil
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Navigation -->
+      <div class="profile-tabs">
+        <button class="tab-btn active" data-tab="posts">📝 Posts</button>
+        <button class="tab-btn" data-tab="gallery">🖼️ Gallery</button>
+        <button class="tab-btn" data-tab="videos">🎥 Videos</button>
+        <button class="tab-btn" data-tab="streams">🔴 Live Streams</button>
+        <button class="tab-btn" data-tab="about">ℹ️ About</button>
+      </div>
+
+      <!-- Posts Tab -->
+      <section id="posts-tab" class="profile-section active">
+        <div class="posts-header">
+          <h2>📝 My Posts</h2>
+          <button id="newPostBtn" class="btn primary">➕ New Post</button>
+        </div>
+        <div class="posts-grid" id="userPostsContainer">
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>Belum ada post</h3>
+            <p>Mulai berbagi konten menarik dengan komunitas!</p>
+            <button
+              class="btn primary"
+              onclick="window.location.href='posts.html'"
+            >
+              Buat Post Pertama
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gallery Tab -->
+      <section id="gallery-tab" class="profile-section">
+        <div class="gallery-header">
+          <h2>🖼️ Photo Gallery</h2>
+          <button id="uploadPhotoBtn" class="btn primary">
+            📷 Upload Photo
+          </button>
+          <input
+            type="file"
+            id="galleryInput"
+            accept="image/*"
+            multiple
+            style="display: none"
+          />
+        </div>
+        <div class="gallery-grid" id="userGalleryContainer">
+          <div class="empty-state">
+            <div class="empty-icon">🖼️</div>
+            <h3>Galeri kosong</h3>
+            <p>Upload foto-foto menarik ke galeri Anda!</p>
+            <button
+              class="btn primary"
+              onclick="document.getElementById('galleryInput').click()"
+            >
+              Upload Foto
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Videos Tab -->
+      <section id="videos-tab" class="profile-section">
+        <div class="videos-header">
+          <h2>🎥 Video Gallery</h2>
+          <button id="uploadVideoBtn" class="btn primary">
+            🎬 Upload Video
+          </button>
+          <input
+            type="file"
+            id="videoInput"
+            accept="video/*"
+            style="display: none"
+          />
+        </div>
+        <div class="videos-grid" id="userVideosContainer">
+          <div class="empty-state">
+            <div class="empty-icon">🎥</div>
+            <h3>Belum ada video</h3>
+            <p>Upload video pertama Anda dan mulai membangun audience!</p>
+            <button
+              class="btn primary"
+              onclick="document.getElementById('videoInput').click()"
+            >
+              Upload Video
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Streams Tab -->
+      <section id="streams-tab" class="profile-section">
+        <div class="streams-header">
+          <h2>🔴 Live Stream History</h2>
+          <a href="studio.html" class="btn primary">🎬 Start Live Stream</a>
+        </div>
+        <div class="streams-grid" id="userStreamsContainer">
+          <div class="empty-state">
+            <div class="empty-icon">🔴</div>
+            <h3>Belum pernah live stream</h3>
+            <p>
+              Mulai live streaming pertama Anda dan terhubung dengan audience!
+            </p>
+            <a href="studio.html" class="btn primary">🎬 Mulai Live Stream</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Tab -->
+      <section id="about-tab" class="profile-section">
+        <div class="about-content">
+          <h2>ℹ️ About Me</h2>
+          <div class="about-grid">
+            <div class="about-card">
+              <h3>📧 Contact Information</h3>
+              <div class="info-item">
+                <label>Email:</label>
+                <span id="aboutEmail">Loading...</span>
+              </div>
+              <div class="info-item">
+                <label>Phone:</label>
+                <span id="aboutPhone">Belum diisi</span>
+              </div>
+              <div class="info-item">
+                <label>Website:</label>
+                <span id="aboutWebsite">Belum diisi</span>
+              </div>
+              <div class="info-item">
+                <label>Location:</label>
+                <span id="aboutLocation">Belum diisi</span>
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>📅 Account Details</h3>
+              <div class="info-item">
+                <label>Member Since:</label>
+                <span id="aboutJoinedDate">Loading...</span>
+              </div>
+              <div class="info-item">
+                <label>Last Active:</label>
+                <span id="aboutLastActive">Online now</span>
+              </div>
+              <div class="info-item">
+                <label>Account Type:</label>
+                <span id="aboutAccountType">Standard User</span>
+              </div>
+              <div class="info-item">
+                <label>Total Earnings:</label>
+                <span id="aboutEarnings">Rp 0</span>
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>🎯 Interests & Skills</h3>
+              <div class="tags-container" id="userInterests">
+                <span class="interest-tag">🎮 Gaming</span>
+                <span class="interest-tag">🎵 Music</span>
+                <span class="interest-tag">🎨 Art</span>
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>🏆 Achievements</h3>
+              <div class="achievements-container" id="userAchievements">
+                <div class="achievement">🎉 Platform Member</div>
+                <div class="achievement">📝 Content Creator</div>
+                <div class="achievement">🌟 Active User</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+      <div class="modal-content edit-profile-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>✏️ Edit Profile</h2>
         </div>
+        <div class="modal-body">
+          <form id="editProfileForm" class="profile-form">
+            <div class="form-group">
+              <label for="editName">Full Name:</label>
+              <input type="text" id="editName" required maxlength="50" />
+            </div>
+
+            <div class="form-group">
+              <label for="editBio">Bio:</label>
+              <textarea
+                id="editBio"
+                maxlength="160"
+                placeholder="Tell us about yourself..."
+              ></textarea>
+              <small class="char-count">0/160 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label for="editPhone">Phone Number:</label>
+              <input
+                type="tel"
+                id="editPhone"
+                placeholder="+62 xxx-xxxx-xxxx"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editWebsite">Website:</label>
+              <input
+                type="url"
+                id="editWebsite"
+                placeholder="https://yourwebsite.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editLocation">Location:</label>
+              <input
+                type="text"
+                id="editLocation"
+                placeholder="City, Country"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Interests:</label>
+              <div class="interests-selector">
+                <label class="checkbox-label">
+                  <input type="checkbox" value="gaming" /> 🎮 Gaming
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="music" /> 🎵 Music
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="art" /> 🎨 Art
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="technology" /> 💻 Technology
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="cooking" /> 🍳 Cooking
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="sports" /> ⚽ Sports
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="travel" /> ✈️ Travel
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="photography" /> 📷 Photography
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                id="cancelEditProfile"
+                class="btn secondary"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn primary">💾 Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Media Viewer Modal -->
+    <div id="mediaViewerModal" class="modal">
+      <div class="modal-content media-viewer">
+        <span class="close">&times;</span>
+        <div class="media-container" id="mediaContainer">
+          <!-- Media content will be displayed here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
+        </div>
+        <div class="support-info">
+          <span class="support-name">AI Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Profile Assistant</h4>
+              <span class="chat-subtitle">Profile Help & Support</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>👤 Welcome to your profile page!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>📝 Creating and managing posts</li>
+                <li>🖼️ Uploading photos and videos</li>
+                <li>✏️ Editing profile information</li>
+                <li>🎬 Starting live streams</li>
+                <li>💰 Monetization features</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about profile features..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/main.js"></script>
-    <script src="js/profile.js"></script>
-</body>
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/ai-support.js"></script>
+    <script>
+      // Enhanced Profile Manager
+      class ProfileManager {
+        constructor() {
+          this.currentUser = null;
+          this.currentTab = "posts";
+          this.init();
+        }
+
+        init() {
+          this.checkAuthStatus();
+          this.setupEventListeners();
+          this.loadProfileData();
+        }
+
+        checkAuthStatus() {
+          const userData = localStorage.getItem("nabila_user");
+          if (userData) {
+            this.currentUser = JSON.parse(userData);
+            this.showUserInterface();
+            this.loadUserProfile();
+          } else {
+            this.showLoginRequired();
+          }
+        }
+
+        showLoginRequired() {
+          document.querySelector(".profile-container").innerHTML = `
+            <div class="login-required">
+              <div class="login-prompt">
+                <h2>🔐 Login Required</h2>
+                <p>Please log in to view and manage your profile</p>
+                <a href="Auth.html" class="btn primary">🔑 Login / Register</a>
+              </div>
+            </div>
+          `;
+        }
+
+        showUserInterface() {
+          // Show user wallet and info
+          const userWallet = document.getElementById("userWallet");
+          const userInfo = document.getElementById("userInfo");
+          const loginBtn = document.getElementById("loginRegisterBtn");
+
+          if (userWallet) userWallet.style.display = "flex";
+          if (userInfo) userInfo.style.display = "flex";
+          if (loginBtn) loginBtn.style.display = "none";
+
+          // Update nav user info
+          const navAvatar = document.getElementById("userAvatar");
+          const navName = document.getElementById("userName");
+
+          if (navAvatar) {
+            navAvatar.src = this.currentUser.avatar;
+            navAvatar.style.display = "block";
+          }
+          if (navName) {
+            navName.textContent = this.currentUser.name;
+            navName.style.display = "block";
+          }
+        }
+
+        setupEventListeners() {
+          // Tab navigation
+          document.querySelectorAll(".tab-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              this.switchTab(e.target.dataset.tab);
+            });
+          });
+
+          // Profile actions
+          document
+            .getElementById("editProfileBtn")
+            ?.addEventListener("click", () => this.showEditModal());
+          document
+            .getElementById("createPostBtn")
+            ?.addEventListener(
+              "click",
+              () => (window.location.href = "posts.html"),
+            );
+          document
+            .getElementById("newPostBtn")
+            ?.addEventListener(
+              "click",
+              () => (window.location.href = "posts.html"),
+            );
+          document
+            .getElementById("shareProfileBtn")
+            ?.addEventListener("click", () => this.shareProfile());
+
+          // Photo uploads
+          document
+            .getElementById("editAvatarBtn")
+            ?.addEventListener("click", () => {
+              document.getElementById("avatarInput").click();
+            });
+          document
+            .getElementById("editCoverBtn")
+            ?.addEventListener("click", () => {
+              document.getElementById("coverInput").click();
+            });
+          document
+            .getElementById("uploadPhotoBtn")
+            ?.addEventListener("click", () => {
+              document.getElementById("galleryInput").click();
+            });
+          document
+            .getElementById("uploadVideoBtn")
+            ?.addEventListener("click", () => {
+              document.getElementById("videoInput").click();
+            });
+
+          // File inputs
+          document
+            .getElementById("avatarInput")
+            ?.addEventListener("change", (e) => {
+              this.handleAvatarUpload(e.target.files[0]);
+            });
+          document
+            .getElementById("coverInput")
+            ?.addEventListener("change", (e) => {
+              this.handleCoverUpload(e.target.files[0]);
+            });
+          document
+            .getElementById("galleryInput")
+            ?.addEventListener("change", (e) => {
+              this.handleGalleryUpload(e.target.files);
+            });
+          document
+            .getElementById("videoInput")
+            ?.addEventListener("change", (e) => {
+              this.handleVideoUpload(e.target.files[0]);
+            });
+
+          // Modal events
+          document.querySelectorAll(".modal .close").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.target.closest(".modal").style.display = "none";
+            });
+          });
+
+          // Edit profile form
+          document
+            .getElementById("editProfileForm")
+            ?.addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.saveProfileChanges();
+            });
+
+          document
+            .getElementById("cancelEditProfile")
+            ?.addEventListener("click", () => {
+              document.getElementById("editProfileModal").style.display =
+                "none";
+            });
+
+          // Logout
+          document
+            .getElementById("logoutBtn")
+            ?.addEventListener("click", () => {
+              localStorage.removeItem("nabila_user");
+              window.location.href = "index.html";
+            });
+        }
+
+        loadUserProfile() {
+          if (!this.currentUser) return;
+
+          // Update profile display
+          document.getElementById("profileName").textContent =
+            this.currentUser.name;
+          document.getElementById("profileAvatar").src =
+            this.currentUser.avatar;
+
+          // Load user data from storage
+          const userData = this.getUserData();
+
+          document.getElementById("profileBio").textContent =
+            userData.bio ||
+            "Bio belum diisi. Klik Edit Profil untuk menambahkan bio menarik!";
+
+          // Update stats
+          this.updateProfileStats();
+
+          // Load tab content
+          this.loadTabContent(this.currentTab);
+        }
+
+        getUserData() {
+          const allUserData = JSON.parse(
+            localStorage.getItem("nabila_user_data") || "{}",
+          );
+          return allUserData[this.currentUser.id] || {};
+        }
+
+        saveUserData(data) {
+          const allUserData = JSON.parse(
+            localStorage.getItem("nabila_user_data") || "{}",
+          );
+          allUserData[this.currentUser.id] = {
+            ...allUserData[this.currentUser.id],
+            ...data,
+          };
+          localStorage.setItem("nabila_user_data", JSON.stringify(allUserData));
+        }
+
+        updateProfileStats() {
+          const posts = JSON.parse(
+            localStorage.getItem("nabila_posts") || "[]",
+          );
+          const userPosts = posts.filter(
+            (post) => post.author.id === this.currentUser.id,
+          );
+
+          document.getElementById("profilePostsCount").textContent =
+            userPosts.length;
+
+          // Animate stats
+          this.animateNumber("profilePostsCount", userPosts.length);
+          this.animateNumber("profileFollowersCount", 125);
+          this.animateNumber("profileFollowingCount", 89);
+          this.animateNumber("profileStreamsCount", 0);
+        }
+
+        animateNumber(elementId, targetNumber) {
+          const element = document.getElementById(elementId);
+          if (!element) return;
+
+          let current = 0;
+          const increment = targetNumber / 20;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= targetNumber) {
+              current = targetNumber;
+              clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+          }, 50);
+        }
+
+        switchTab(tabName) {
+          // Update tab buttons
+          document.querySelectorAll(".tab-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+          document
+            .querySelector(`[data-tab="${tabName}"]`)
+            ?.classList.add("active");
+
+          // Update sections
+          document.querySelectorAll(".profile-section").forEach((section) => {
+            section.classList.remove("active");
+          });
+          document.getElementById(`${tabName}-tab`)?.classList.add("active");
+
+          this.currentTab = tabName;
+          this.loadTabContent(tabName);
+        }
+
+        loadTabContent(tabName) {
+          switch (tabName) {
+            case "posts":
+              this.loadUserPosts();
+              break;
+            case "gallery":
+              this.loadUserGallery();
+              break;
+            case "videos":
+              this.loadUserVideos();
+              break;
+            case "about":
+              this.loadAboutInfo();
+              break;
+          }
+        }
+
+        loadUserPosts() {
+          const posts = JSON.parse(
+            localStorage.getItem("nabila_posts") || "[]",
+          );
+          const userPosts = posts.filter(
+            (post) => post.author.id === this.currentUser.id,
+          );
+          const container = document.getElementById("userPostsContainer");
+
+          if (userPosts.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h3>Belum ada post</h3>
+                <p>Mulai berbagi konten menarik dengan komunitas!</p>
+                <button class="btn primary" onclick="window.location.href='posts.html'">Buat Post Pertama</button>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = userPosts
+            .map((post) => this.createPostCard(post))
+            .join("");
+        }
+
+        createPostCard(post) {
+          return `
+            <div class="post-card">
+              <div class="post-header">
+                <h3>${post.title}</h3>
+                <span class="post-date">${new Date(post.created_at).toLocaleDateString("id-ID")}</span>
+              </div>
+              <div class="post-content">
+                <p>${post.content}</p>
+                ${
+                  post.media && post.media.length > 0
+                    ? `
+                  <div class="post-media">
+                    ${post.media
+                      .slice(0, 3)
+                      .map((media) =>
+                        media.type.startsWith("image/")
+                          ? `<img src="${media.url}" alt="${media.name}" onclick="profileManager.viewMedia('${media.url}', 'image')">`
+                          : `<video src="${media.url}" controls></video>`,
+                      )
+                      .join("")}
+                  </div>
+                `
+                    : ""
+                }
+              </div>
+              <div class="post-stats">
+                <span>❤️ ${post.likes || 0}</span>
+                <span>💬 ${post.comments?.length || 0}</span>
+                <span>👁️ ${post.views || 0}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        loadUserGallery() {
+          const userData = this.getUserData();
+          const gallery = userData.gallery || [];
+          const container = document.getElementById("userGalleryContainer");
+
+          if (gallery.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-icon">🖼️</div>
+                <h3>Galeri kosong</h3>
+                <p>Upload foto-foto menarik ke galeri Anda!</p>
+                <button class="btn primary" onclick="document.getElementById('galleryInput').click()">Upload Foto</button>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = gallery
+            .map(
+              (photo) => `
+            <div class="gallery-item" onclick="profileManager.viewMedia('${photo.url}', 'image')">
+              <img src="${photo.url}" alt="${photo.name}">
+              <div class="gallery-overlay">
+                <span class="view-icon">👁️</span>
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        }
+
+        loadUserVideos() {
+          const userData = this.getUserData();
+          const videos = userData.videos || [];
+          const container = document.getElementById("userVideosContainer");
+
+          if (videos.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-icon">🎥</div>
+                <h3>Belum ada video</h3>
+                <p>Upload video pertama Anda dan mulai membangun audience!</p>
+                <button class="btn primary" onclick="document.getElementById('videoInput').click()">Upload Video</button>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = videos
+            .map(
+              (video) => `
+            <div class="video-card" onclick="profileManager.viewMedia('${video.url}', 'video')">
+              <div class="video-thumbnail">
+                <img src="${video.thumbnail || "https://via.placeholder.com/320x180/333/fff?text=Video"}" alt="${video.title}">
+                <div class="play-overlay">▶️</div>
+              </div>
+              <div class="video-info">
+                <h4>${video.title || "Untitled Video"}</h4>
+                <p>${video.description || "No description"}</p>
+                <div class="video-stats">
+                  <span>👁️ ${video.views || 0}</span>
+                  <span>📅 ${new Date(video.uploadedAt).toLocaleDateString("id-ID")}</span>
+                </div>
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        }
+
+        loadAboutInfo() {
+          if (!this.currentUser) return;
+
+          const userData = this.getUserData();
+
+          document.getElementById("aboutEmail").textContent =
+            this.currentUser.email;
+          document.getElementById("aboutPhone").textContent =
+            userData.phone || "Belum diisi";
+          document.getElementById("aboutWebsite").textContent =
+            userData.website || "Belum diisi";
+          document.getElementById("aboutLocation").textContent =
+            userData.location || "Belum diisi";
+          document.getElementById("aboutJoinedDate").textContent = new Date(
+            this.currentUser.created_at,
+          ).toLocaleDateString("id-ID");
+
+          // Load interests
+          const interestsContainer = document.getElementById("userInterests");
+          const interests = userData.interests || ["gaming", "music", "art"];
+
+          interestsContainer.innerHTML = interests
+            .map(
+              (interest) =>
+                `<span class="interest-tag">${this.getInterestIcon(interest)} ${interest}</span>`,
+            )
+            .join("");
+        }
+
+        getInterestIcon(interest) {
+          const icons = {
+            gaming: "🎮",
+            music: "🎵",
+            art: "🎨",
+            technology: "💻",
+            cooking: "🍳",
+            sports: "⚽",
+            travel: "✈️",
+            photography: "📷",
+          };
+          return icons[interest] || "🏷️";
+        }
+
+        showEditModal() {
+          const userData = this.getUserData();
+
+          // Populate form
+          document.getElementById("editName").value = this.currentUser.name;
+          document.getElementById("editBio").value = userData.bio || "";
+          document.getElementById("editPhone").value = userData.phone || "";
+          document.getElementById("editWebsite").value = userData.website || "";
+          document.getElementById("editLocation").value =
+            userData.location || "";
+
+          // Set interests
+          const interests = userData.interests || [];
+          document
+            .querySelectorAll('.interests-selector input[type="checkbox"]')
+            .forEach((checkbox) => {
+              checkbox.checked = interests.includes(checkbox.value);
+            });
+
+          document.getElementById("editProfileModal").style.display = "block";
+        }
+
+        saveProfileChanges() {
+          const formData = {
+            name: document.getElementById("editName").value,
+            bio: document.getElementById("editBio").value,
+            phone: document.getElementById("editPhone").value,
+            website: document.getElementById("editWebsite").value,
+            location: document.getElementById("editLocation").value,
+            interests: Array.from(
+              document.querySelectorAll(".interests-selector input:checked"),
+            ).map((cb) => cb.value),
+          };
+
+          // Update current user
+          this.currentUser.name = formData.name;
+          localStorage.setItem("nabila_user", JSON.stringify(this.currentUser));
+
+          // Update user data
+          this.saveUserData(formData);
+
+          // Update UI
+          this.loadUserProfile();
+
+          document.getElementById("editProfileModal").style.display = "none";
+          this.showNotification("Profile updated successfully!", "success");
+        }
+
+        handleAvatarUpload(file) {
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const imageUrl = e.target.result;
+            this.currentUser.avatar = imageUrl;
+            localStorage.setItem(
+              "nabila_user",
+              JSON.stringify(this.currentUser),
+            );
+
+            document.getElementById("profileAvatar").src = imageUrl;
+            const navAvatar = document.getElementById("userAvatar");
+            if (navAvatar) navAvatar.src = imageUrl;
+
+            this.showNotification("Profile photo updated!", "success");
+          };
+          reader.readAsDataURL(file);
+        }
+
+        handleCoverUpload(file) {
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const imageUrl = e.target.result;
+            this.saveUserData({ coverPhoto: imageUrl });
+            document.getElementById("profileCover").src = imageUrl;
+            this.showNotification("Cover photo updated!", "success");
+          };
+          reader.readAsDataURL(file);
+        }
+
+        handleGalleryUpload(files) {
+          if (!files || files.length === 0) return;
+
+          const userData = this.getUserData();
+          userData.gallery = userData.gallery || [];
+
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              userData.gallery.unshift({
+                id: "photo_" + Date.now() + "_" + Math.random(),
+                url: e.target.result,
+                name: file.name,
+                uploadedAt: new Date().toISOString(),
+              });
+              this.saveUserData(userData);
+              this.loadUserGallery();
+            };
+            reader.readAsDataURL(file);
+          });
+
+          this.showNotification(
+            `${files.length} photo(s) uploaded!`,
+            "success",
+          );
+        }
+
+        handleVideoUpload(file) {
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const userData = this.getUserData();
+            userData.videos = userData.videos || [];
+
+            userData.videos.unshift({
+              id: "video_" + Date.now(),
+              title: file.name.replace(/\.[^/.]+$/, ""),
+              url: e.target.result,
+              uploadedAt: new Date().toISOString(),
+              views: 0,
+            });
+
+            this.saveUserData(userData);
+            this.loadUserVideos();
+            this.showNotification("Video uploaded successfully!", "success");
+          };
+          reader.readAsDataURL(file);
+        }
+
+        viewMedia(url, type) {
+          const modal = document.getElementById("mediaViewerModal");
+          const container = document.getElementById("mediaContainer");
+
+          if (type === "image") {
+            container.innerHTML = `<img src="${url}" style="max-width: 90vw; max-height: 90vh; object-fit: contain;">`;
+          } else if (type === "video") {
+            container.innerHTML = `<video src="${url}" controls style="max-width: 90vw; max-height: 90vh;">`;
+          }
+
+          modal.style.display = "block";
+        }
+
+        shareProfile() {
+          const profileUrl = `${window.location.origin}/profile.html?user=${this.currentUser.id}`;
+
+          if (navigator.share) {
+            navigator.share({
+              title: `${this.currentUser.name}'s Profile - Nabila Stream`,
+              text: `Check out ${this.currentUser.name}'s profile on Nabila Stream!`,
+              url: profileUrl,
+            });
+          } else {
+            navigator.clipboard.writeText(profileUrl).then(() => {
+              this.showNotification(
+                "Profile link copied to clipboard!",
+                "success",
+              );
+            });
+          }
+        }
+
+        showNotification(message, type = "info") {
+          const notification = document.createElement("div");
+          notification.className = `profile-notification ${type}`;
+          notification.innerHTML = `
+            <div class="notification-content">
+              <span class="notification-icon">${type === "success" ? "✅" : "📢"}</span>
+              <span class="notification-message">${message}</span>
+            </div>
+          `;
+
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            notification.remove();
+          }, 3000);
+        }
+
+        loadProfileData() {
+          // Load initial profile data
+          if (this.currentUser) {
+            this.loadTabContent(this.currentTab);
+          }
+        }
+      }
+
+      // Initialize profile manager
+      document.addEventListener("DOMContentLoaded", () => {
+        window.profileManager = new ProfileManager();
+      });
+    </script>
+
+    <style>
+      .login-required {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+      }
+
+      .login-prompt {
+        text-align: center;
+        background: var(--card-bg);
+        padding: 60px 40px;
+        border-radius: 20px;
+        border: 2px solid var(--border-color);
+      }
+
+      .login-prompt h2 {
+        color: var(--text-light);
+        margin-bottom: 20px;
+      }
+
+      .login-prompt p {
+        color: var(--text-dark);
+        margin-bottom: 30px;
+      }
+
+      .profile-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 15px 20px;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: slideInRight 0.3s ease;
+      }
+
+      .profile-notification.success {
+        border-color: #27ae60;
+      }
+
+      .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .notification-message {
+        color: var(--text-light);
+        font-weight: bold;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </body>
 </html>

@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Purchase Management | Nabila Stream</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/shop-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
+          <span>Nabila Stream Admin</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="admin.html" class="active">📊 Dashboard</a></li>
+            <li><a href="#" id="ordersTab">📦 Orders</a></li>
+            <li><a href="#" id="usersTab">👥 Users</a></li>
+            <li><a href="#" id="campaignsTab">📢 Campaigns</a></li>
+            <li><a href="#" id="creatorsTab">🌟 Creators</a></li>
+            <li><a href="#" id="withdrawalsTab">💳 Withdrawals</a></li>
+            <li><a href="#" id="managementTab">👥 Teams</a></li>
+            <li><a href="#" id="analyticsTab">📈 Analytics</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <div class="admin-info" id="adminInfo" style="display: none">
+            <span id="adminName">Admin</span>
+            <button id="adminLogout" class="btn">Logout</button>
+          </div>
+          <div class="admin-login" id="adminLogin">
+            <button id="loginBtn" class="btn">Admin Login</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- Login Form -->
+      <section id="loginSection" class="admin-login-section">
+        <div class="container">
+          <div class="login-form-container">
+            <div class="login-card">
+              <h2>🔐 Admin Login</h2>
+              <p>Masuk untuk mengelola pembelian dan pembayaran</p>
+
+              <form id="adminLoginForm" class="admin-form">
+                <div class="input-group">
+                  <label for="adminEmail">Email:</label>
+                  <input
+                    type="email"
+                    id="adminEmail"
+                    required
+                    placeholder="jesikamahjong@gmail.com"
+                  />
+                </div>
+
+                <div class="input-group">
+                  <label for="adminPassword">Password:</label>
+                  <input
+                    type="password"
+                    id="adminPassword"
+                    required
+                    placeholder="Enter password"
+                  />
+                </div>
+
+                <button type="submit" class="btn primary full-width">
+                  🔑 Login
+                </button>
+
+                <div class="login-help">
+                  <p>Demo credentials:</p>
+                  <p><strong>Email:</strong> jesikamahjong@gmail.com</p>
+                  <p><strong>Password:</strong> axis2019</p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard -->
+      <section
+        id="dashboardSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>📊 Admin Dashboard</h1>
+
+          <!-- Stats Cards -->
+          <div class="admin-stats">
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">Total Orders</div>
+              </div>
+            </div>
+
+            <div class="stat-card pending">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingOrders">0</div>
+                <div class="stat-label">Pending Orders</div>
+              </div>
+            </div>
+
+            <div class="stat-card approved">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <div class="stat-number" id="approvedOrders">0</div>
+                <div class="stat-label">Approved Orders</div>
+              </div>
+            </div>
+
+            <div class="stat-card revenue">
+              <div class="stat-icon">💰</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalRevenue">Rp 0</div>
+                <div class="stat-label">Total Revenue</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <h3>⚡ Quick Actions</h3>
+            <div class="action-buttons">
+              <button class="action-btn" id="refreshData">
+                🔄 Refresh Data
+              </button>
+              <button class="action-btn" id="exportOrders">
+                📊 Export Orders
+              </button>
+              <button class="action-btn" id="viewUsers">👥 Manage Users</button>
+              <button class="action-btn" id="viewAnalytics">
+                📈 View Analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Orders -->
+          <div class="recent-orders">
+            <h3>📋 Recent Orders</h3>
+            <div class="orders-table-container">
+              <table class="orders-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recentOrdersTable">
+                  <!-- Orders will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Orders Management -->
+      <section id="ordersSection" class="admin-section" style="display: none">
+        <div class="container">
+          <div class="section-header">
+            <h1>📋 Orders Management</h1>
+            <div class="filters">
+              <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <select id="paymentFilter">
+                <option value="">All Payment Methods</option>
+                <option value="gopay">GoPay</option>
+                <option value="bank">Bank Transfer</option>
+                <option value="virtual">Virtual Currency</option>
+              </select>
+              <input type="date" id="dateFilter" placeholder="Filter by date" />
+            </div>
+          </div>
+
+          <div class="orders-grid" id="ordersGrid">
+            <!-- Orders will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Users Management -->
+      <section id="usersSection" class="admin-section" style="display: none">
+        <div class="container">
+          <h1>👥 Users Management</h1>
+
+          <div class="users-stats">
+            <div class="stat-card">
+              <div class="stat-icon">👤</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">🟢</div>
+              <div class="stat-info">
+                <div class="stat-number" id="activeUsers">0</div>
+                <div class="stat-label">Active Users</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-info">
+                <div class="stat-number" id="payingUsers">0</div>
+                <div class="stat-label">Paying Users</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="users-table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Avatar</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Balance</th>
+                  <th>Orders</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <!-- Users will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaigns Management -->
+      <section
+        id="campaignsSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>📢 Campaign Management</h1>
+
+          <div class="campaign-stats">
+            <div class="stat-card">
+              <div class="stat-icon">📢</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalCampaigns">0</div>
+                <div class="stat-label">Total Campaigns</div>
+              </div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingCampaigns">0</div>
+                <div class="stat-label">Pending Approval</div>
+              </div>
+            </div>
+            <div class="stat-card active">
+              <div class="stat-icon">🟢</div>
+              <div class="stat-info">
+                <div class="stat-number" id="activeCampaigns">0</div>
+                <div class="stat-label">Active Campaigns</div>
+              </div>
+            </div>
+            <div class="stat-card revenue">
+              <div class="stat-icon">💰</div>
+              <div class="stat-info">
+                <div class="stat-number" id="campaignRevenue">Rp 0</div>
+                <div class="stat-label">Campaign Revenue</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="campaigns-table-container">
+            <table class="campaigns-table">
+              <thead>
+                <tr>
+                  <th>Campaign ID</th>
+                  <th>User</th>
+                  <th>Package</th>
+                  <th>Post</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="campaignsTable">
+                <!-- Campaigns will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Creators Management -->
+      <section id="creatorsSection" class="admin-section" style="display: none">
+        <div class="container">
+          <h1>🌟 Creator Program Management</h1>
+
+          <div class="creators-stats">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalCreators">0</div>
+                <div class="stat-label">Total Creators</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingApplications">0</div>
+                <div class="stat-label">Pending Applications</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <div class="stat-number" id="approvedCreators">0</div>
+                <div class="stat-label">Approved Creators</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="creator-applications">
+            <h3>📋 Creator Applications</h3>
+            <div id="creatorApplicationsList">
+              <!-- Applications will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Withdrawals Management -->
+      <section
+        id="withdrawalsSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>💳 Withdrawal Management</h1>
+
+          <div class="withdrawal-stats">
+            <div class="stat-card">
+              <div class="stat-icon">💳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalWithdrawals">0</div>
+                <div class="stat-label">Total Requests</div>
+              </div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingWithdrawals">0</div>
+                <div class="stat-label">Pending Review</div>
+              </div>
+            </div>
+            <div class="stat-card approved">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <div class="stat-number" id="approvedWithdrawals">Rp 0</div>
+                <div class="stat-label">Approved Amount</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="withdrawals-table-container">
+            <table class="withdrawals-table">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawalsTable">
+                <!-- Withdrawals will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Management Teams -->
+      <section
+        id="managementSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>👥 Management Teams</h1>
+
+          <div class="teams-overview">
+            <div class="team-card">
+              <div class="team-header">
+                <h3>🤖 AI Support Division</h3>
+                <span class="team-status online">Online 24/7</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Advanced AI chatbot providing instant customer support for all
+                  platform inquiries.
+                </p>
+                <ul>
+                  <li>✅ 24/7 availability</li>
+                  <li>✅ Multi-language support</li>
+                  <li>✅ Smart response system</li>
+                  <li>✅ Real-time problem solving</li>
+                </ul>
+                <button class="btn primary" id="viewAiBot">
+                  🤖 Manage AI Bot
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📊 Reports Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Handles user reports, content moderation, and platform safety.
+                </p>
+                <ul>
+                  <li>✅ Content moderation</li>
+                  <li>✅ User report handling</li>
+                  <li>✅ Safety compliance</li>
+                  <li>✅ Policy enforcement</li>
+                </ul>
+                <button class="btn primary" id="viewReports">
+                  📊 View Reports
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📝 Registration Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Manages user registrations, creator applications, and account
+                  verification.
+                </p>
+                <ul>
+                  <li>✅ User registration</li>
+                  <li>✅ Creator program applications</li>
+                  <li>✅ Account verification</li>
+                  <li>✅ KYC processes</li>
+                </ul>
+                <button class="btn primary" id="viewRegistrations">
+                  📝 Manage Registrations
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>💰 Finance Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>Handles payments, withdrawals, and financial operations.</p>
+                <ul>
+                  <li>✅ Payment processing</li>
+                  <li>✅ Withdrawal approvals</li>
+                  <li>✅ Financial reporting</li>
+                  <li>✅ Revenue management</li>
+                </ul>
+                <button class="btn primary" id="viewFinance">
+                  💰 Finance Dashboard
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📋 Policy Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Creates and maintains platform policies, terms of service, and
+                  compliance.
+                </p>
+                <ul>
+                  <li>✅ Policy development</li>
+                  <li>�� Terms of service</li>
+                  <li>✅ Compliance monitoring</li>
+                  <li>✅ Legal framework</li>
+                </ul>
+                <button class="btn primary" id="viewPolicies">
+                  📋 Manage Policies
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📢 Campaign Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Manages promotional campaigns and platform marketing
+                  initiatives.
+                </p>
+                <ul>
+                  <li>✅ Campaign strategy</li>
+                  <li>✅ Boost program management</li>
+                  <li>✅ Marketing analytics</li>
+                  <li>✅ ROI optimization</li>
+                </ul>
+                <button class="btn primary" id="viewCampaignDivision">
+                  📢 Campaign Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics -->
+      <section
+        id="analyticsSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>📈 Analytics</h1>
+
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <h3>💰 Revenue Trends</h3>
+              <div class="chart-container">
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <h3>📦 Order Types</h3>
+              <div class="chart-container">
+                <canvas id="orderTypesChart" width="400" height="200"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <h3>💳 Payment Methods</h3>
+              <div class="payment-methods-stats">
+                <div class="payment-stat">
+                  <span class="payment-icon">💳</span>
+                  <span class="payment-name">GoPay</span>
+                  <span class="payment-percentage" id="gopayPercentage"
+                    >0%</span
+                  >
+                </div>
+                <div class="payment-stat">
+                  <span class="payment-icon">🏦</span>
+                  <span class="payment-name">Bank Transfer</span>
+                  <span class="payment-percentage" id="bankPercentage">0%</span>
+                </div>
+                <div class="payment-stat">
+                  <span class="payment-icon">💎</span>
+                  <span class="payment-name">Virtual Currency</span>
+                  <span class="payment-percentage" id="virtualPercentage"
+                    >0%</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <h3>📊 Top Items</h3>
+              <div class="top-items-list" id="topItemsList">
+                <!-- Top items will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div id="orderDetailModal" class="modal">
+      <div class="modal-content order-detail-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>📋 Order Details</h2>
+        </div>
+        <div class="modal-body" id="orderDetailContent">
+          <!-- Order details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button id="approveOrder" class="btn success">✅ Approve</button>
+          <button id="rejectOrder" class="btn danger">❌ Reject</button>
+          <button id="closeOrderModal" class="btn secondary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userDetailModal" class="modal">
+      <div class="modal-content user-detail-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>👤 User Details</h2>
+        </div>
+        <div class="modal-body" id="userDetailContent">
+          <!-- User details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button id="adjustBalance" class="btn primary">
+            💰 Adjust Balance
+          </button>
+          <button id="closeUserModal" class="btn secondary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Admin Bot -->
+    <div id="aiAdminBot" class="ai-admin-bot">
+      <div class="bot-toggle" id="botToggle">
+        <div class="bot-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face"
+            alt="AI Admin"
+            class="bot-photo"
+          />
+        </div>
+        <div class="bot-info">
+          <span class="bot-name">AI Admin Assistant</span>
+          <span class="bot-status">🟢 Online 24/7</span>
+        </div>
+        <div class="bot-notification" id="botNotification">3</div>
+      </div>
+
+      <div class="bot-chat" id="botChat" style="display: none">
+        <div class="bot-chat-header">
+          <div class="bot-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Admin"
+              class="bot-header-photo"
+            />
+            <div>
+              <h4>🤖 AI Admin Assistant</h4>
+              <span class="bot-subtitle">Advanced Management Support</span>
+            </div>
+          </div>
+          <button id="closeBotChat">&times;</button>
+        </div>
+
+        <div class="bot-chat-messages" id="botMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Admin"
+              />
+            </div>
+            <div class="message-content">
+              <p>🎉 Welcome to the Admin Panel! I'm your AI Assistant.</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>📊 Real-time analytics</li>
+                <li>🔔 System notifications</li>
+                <li>💰 Revenue tracking</li>
+                <li>👥 User management</li>
+                <li>📢 Campaign optimization</li>
+              </ul>
+              <p>How can I assist you today?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bot-quick-actions">
+          <button class="quick-action-btn" data-action="revenue">
+            💰 Revenue Report
+          </button>
+          <button class="quick-action-btn" data-action="users">
+            👥 User Stats
+          </button>
+          <button class="quick-action-btn" data-action="campaigns">
+            📢 Campaigns
+          </button>
+          <button class="quick-action-btn" data-action="alerts">
+            🔔 Alerts
+          </button>
+        </div>
+
+        <div class="bot-chat-input">
+          <input
+            type="text"
+            id="botInput"
+            placeholder="Ask me anything about admin tasks..."
+          />
+          <button id="sendBotMessage">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <p>&copy; 2025 Nabila Stream Admin Panel. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark)">
+          🤖 Powered by AI Admin Assistant • 📊 Real-time Management • ���
+          Secure Access
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/auth-enhanced.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/ai-admin-bot.js"></script>
+  </body>
+</html>
