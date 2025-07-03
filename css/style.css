@@ -1154,3 +1154,7 @@ a:hover {
     font-size: 2rem;
   }
 }
+
+/* Import enhanced styles */
+@import url("enhanced-styles.css");
+@import url("shop-styles.css");
