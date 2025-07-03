@@ -15,11 +15,13 @@
         </a>
         <nav>
           <ul class="nav-links">
-            <li><a href="index.html">Beranda</a></li>
-            <li><a href="studio.html" class="active">Studio</a></li>
-            <li><a href="posts.html">Posts</a></li>
-            <li><a href="chat.html">Chat</a></li>
-            <li><a href="profile.html">Profil</a></li>
+            <li><a href="index.html">🏠 Beranda</a></li>
+            <li><a href="studio.html" class="active">🎬 Studio</a></li>
+            <li><a href="posts.html">📝 Posts</a></li>
+            <li><a href="chat.html">💬 Chat</a></li>
+            <li><a href="shop.html">🛍️ Shop</a></li>
+            <li><a href="profile.html">👤 Profil</a></li>
+            <li><a href="admin.html">⚙️ Admin</a></li>
           </ul>
         </nav>
         <div class="auth-buttons">
@@ -103,6 +105,71 @@
       </section>
     </main>
 
+    <!-- AI Support Widget -->
+    <div id="aiSupportWidget" class="ai-support-widget">
+      <div class="support-toggle" id="supportToggle">
+        <div class="support-avatar">
+          <img
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop&crop=face"
+            alt="AI Support"
+            class="support-photo"
+          />
+        </div>
+        <div class="support-info">
+          <span class="support-name">Streaming Assistant</span>
+          <span class="support-status">🟢 Online 24/7</span>
+        </div>
+      </div>
+
+      <div class="support-chat" id="supportChat" style="display: none">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop&crop=face"
+              alt="AI Support"
+              class="chat-header-photo"
+            />
+            <div>
+              <h4>🤖 Streaming Assistant</h4>
+              <span class="chat-subtitle">Live Streaming Support</span>
+            </div>
+          </div>
+          <button id="closeSupportChat">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="supportMessages">
+          <div class="bot-message">
+            <div class="message-avatar">
+              <img
+                src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face"
+                alt="AI Support"
+              />
+            </div>
+            <div class="message-content">
+              <p>🎬 Welcome to the Studio!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>🔧 Setting up your live stream</li>
+                <li>📺 OBS and streaming software</li>
+                <li>🎥 Stream quality optimization</li>
+                <li>💡 Content creation tips</li>
+                <li>📊 Audience engagement</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            id="supportInput"
+            placeholder="Ask about streaming setup..."
+          />
+          <button id="sendSupportMessage">Kirim</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="main-footer">
       <div class="container">
         <p>
@@ -115,6 +182,7 @@
     <script src="js/auth-simple.js"></script>
     <script src="js/auth-enhanced.js"></script>
     <script src="js/live-streaming-enhanced.js"></script>
+    <script src="js/ai-support.js"></script>
     <script>
       // Setup logout button and auth check
       document.addEventListener("DOMContentLoaded", () => {
