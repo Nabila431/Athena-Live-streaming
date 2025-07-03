@@ -825,37 +825,62 @@ class ShopManager {
   processTopUpPurchase(currency, amount, price) {
     const currencyIcon = currency === "coins" ? "💎" : "💍";
     const currencyName = currency === "coins" ? "Coins" : "Diamonds";
+    const orderRef = window.paymentManager
+      ? window.paymentManager.generatePaymentReference()
+      : "TOPUP_" + Date.now();
 
-    let message = `💰 *Top Up ${currencyName} - Nabila Stream*\n\n`;
-    message += `${currencyIcon} *${currencyName}:* ${amount.toLocaleString()}\n`;
-    message += `💰 *Total:* Rp ${price.toLocaleString()}\n`;
-    message += `💳 *Metode:* GoPay\n`;
-    message += `👤 *Username:* ${this.currentUser.name}\n`;
-    message += `📧 *Email:* ${this.currentUser.email}\n\n`;
-    message += `Saya sudah transfer ke GoPay: *0895340205302*\n\n`;
-    message += `Mohon konfirmasi dan tambahkan ${currencyName} ke akun saya. Terima kasih! 🙏`;
-
-    const whatsappUrl = `https://wa.me/6285810526151?text=${encodeURIComponent(message)}`;
-
-    // Add to purchase history
-    const topUpItem = {
-      id: `topup_${currency}_${Date.now()}`,
-      name: `${amount.toLocaleString()} ${currencyName}`,
-      description: `Top up ${currencyName}`,
-      icon: currencyIcon,
+    // Create top-up order data
+    const orderData = {
+      orderRef: orderRef,
+      user: this.currentUser,
+      currency: currency,
+      amount: amount,
       price: price,
+      paymentMethod: "gopay",
+      isTopUp: true,
+      item: {
+        id: `topup_${currency}_${Date.now()}`,
+        name: `${amount.toLocaleString()} ${currencyName}`,
+        description: `Top up ${currencyName}`,
+        icon: currencyIcon,
+        price: price,
+      },
+      quantity: 1,
+      totalPrice: price,
     };
 
-    this.addPurchaseToHistory(topUpItem, 1, "pending");
+    // Process through payment manager if available
+    if (window.paymentManager) {
+      const result = window.paymentManager.processWhatsAppCheckout(orderData);
+      if (result.success) {
+        document.getElementById("topUpModal").style.display = "none";
+        this.showPurchaseSuccess(result.message);
+        this.loadPurchaseHistory();
+      }
+    } else {
+      // Fallback to direct WhatsApp
+      let message = `💰 *Top Up ${currencyName} - Nabila Stream*\n\n`;
+      message += `📋 *Order ID:* ${orderRef}\n`;
+      message += `${currencyIcon} *${currencyName}:* ${amount.toLocaleString()}\n`;
+      message += `💰 *Total:* Rp ${price.toLocaleString()}\n`;
+      message += `💳 *Metode:* GoPay\n`;
+      message += `👤 *Username:* ${this.currentUser.name}\n`;
+      message += `📧 *Email:* ${this.currentUser.email}\n\n`;
+      message += `Saya sudah transfer ke GoPay: *0895340205302*\n\n`;
+      message += `Mohon konfirmasi dan tambahkan ${currencyName} ke akun saya. Terima kasih! 🙏`;
 
-    // Close modal and redirect
-    document.getElementById("topUpModal").style.display = "none";
-    window.open(whatsappUrl, "_blank");
+      const whatsappUrl = `https://wa.me/6285810526151?text=${encodeURIComponent(message)}`;
 
-    this.showPurchaseSuccess(
-      "Permintaan top up berhasil dibuat! Anda akan diarahkan ke WhatsApp admin.",
-    );
-    this.loadPurchaseHistory();
+      this.addPurchaseToHistory(orderData.item, 1, "pending");
+
+      document.getElementById("topUpModal").style.display = "none";
+      window.open(whatsappUrl, "_blank");
+
+      this.showPurchaseSuccess(
+        "Permintaan top up berhasil dibuat! Anda akan diarahkan ke WhatsApp admin.",
+      );
+      this.loadPurchaseHistory();
+    }
   }
 
   loadPurchaseHistory() {
