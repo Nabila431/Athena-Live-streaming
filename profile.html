@@ -10,13 +10,15 @@
     <header class="main-header">
       <div class="container navbar">
         <a href="index.html" class="logo">
-          <img src="assets/logo.png" alt="Logo" />
+          <img src="assets/logo.svg" alt="Nabila Stream Logo" />
           <span>Nabila Stream</span>
         </a>
         <nav>
           <ul class="nav-links">
             <li><a href="index.html">Beranda</a></li>
             <li><a href="studio.html">Studio</a></li>
+            <li><a href="posts.html">Posts</a></li>
+            <li><a href="chat.html">Chat</a></li>
             <li><a href="profile.html" class="active">Profil</a></li>
           </ul>
         </nav>
@@ -79,8 +81,21 @@
       </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/main.js"></script>
-    <script src="js/profile.js"></script>
+    <script src="js/auth-simple.js"></script>
+    <script src="js/profile-enhanced.js"></script>
+    <script>
+      // Setup logout button and auth check
+      document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogout);
+        }
+
+        // Check auth for profile page
+        if (!window.authSystem?.requireAuth()) {
+          return;
+        }
+      });
+    </script>
   </body>
 </html>
