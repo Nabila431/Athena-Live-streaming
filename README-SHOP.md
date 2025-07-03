@@ -26,38 +26,45 @@ All items now use **Indonesian Rupiah (IDR)** pricing directly, ranging from **R
 - 500 Diamonds - Rp 55,000 (+ 125 Bonus Diamonds)
 - 1,000 Diamonds - Rp 100,000 (+ 300 Bonus Diamonds)
 
-#### 3. 🎁 Virtual Gifts
+#### 3. 🎁 Virtual Gifts (Direct IDR Payment)
 
 - **Romantic Category**:
-  - Rose (🌹) - 10 Coins
-  - Heart (❤️) - 25 Coins
+  - Rose (🌹) - Rp 500
+  - Heart (❤️) - Rp 1,000
+  - Kiss (💋) - Rp 1,500
+- **Casual Category**:
+  - Coffee (☕) - Rp 2,000
 - **Premium Category**:
-  - Crown (👑) - 100 Coins
+  - Crown (👑) - Rp 5,000
+  - Trophy (🏆) - Rp 7,500
 - **Epic Category**:
-  - Rocket (🚀) - 500 Coins
+  - Rocket (🚀) - Rp 15,000
 - **Legendary Category**:
-  - Diamond Ring (💎💍) - 50 Diamonds
-  - Sports Car (🏎️) - 200 Diamonds
+  - Diamond Ring (💎💍) - Rp 25,000
+  - Sports Car (🏎️) - Rp 50,000
+  - Mansion (🏰) - Rp 100,000
 
-#### 4. 👑 VIP Features (30 Days)
+#### 4. 👑 VIP Features (30 Days) - Direct IDR Payment
 
-- **VIP Bronze** - 50 Diamonds
+- **VIP Bronze** - Rp 15,000
   - Bronze VIP Badge, Priority Support, 10 Exclusive Emotes, Chat Colors
-- **VIP Silver** - 100 Diamonds
+- **VIP Silver** - Rp 30,000
   - Silver VIP Badge, Custom Username Colors, 25 Exclusive Emotes, Private Messages, Stream Priority
-- **VIP Gold** - 200 Diamonds
+- **VIP Gold** - Rp 55,000
   - Gold VIP Badge, Exclusive VIP Room, 50 Exclusive Emotes, Custom Profile Themes, Advanced Analytics
-- **VIP Diamond** - 500 Diamonds
+- **VIP Diamond** - Rp 100,000
   - Diamond VIP Badge, Personal Assistant, Unlimited Emotes, Custom Stream Overlays, Revenue Boost
 
-#### 5. 😊 Custom Emotes
+#### 5. 😊 Custom Emotes - Direct IDR Payment
 
-- Super Laugh (😂) - 10 Coins
-- Cool Sunglasses (😎) - 15 Coins
-- Fire Reaction (🔥) - 20 Coins
-- Party Time (🎉) - 25 Coins
-- Magic Sparkles (✨) - 5 Diamonds
-- Rainbow Blast (🌈) - 10 Diamonds
+- Super Laugh (😂) - Rp 1,000
+- Cool Sunglasses (😎) - Rp 1,500
+- Fire Reaction (🔥) - Rp 2,000
+- Party Time (🎉) - Rp 2,500
+- Love Eyes (😍) - Rp 3,000
+- Mind Blown (🤯) - Rp 4,000
+- Magic Sparkles (✨) - Rp 5,000
+- Rainbow Blast (🌈) - Rp 7,500
 
 ## 💳 Payment System
 
