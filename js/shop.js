@@ -492,15 +492,10 @@ class ShopManager {
   createItemCard(item, category) {
     const isAffordable = this.canAffordItem(item);
     const buttonClass = isAffordable ? "buy-btn" : "buy-btn disabled";
-    const buttonText = isAffordable ? "Beli Sekarang" : "Saldo Tidak Cukup";
+    const buttonText = isAffordable ? "Beli Sekarang" : "Login Required";
 
-    let priceDisplay = "";
-    if (category === "coins" || category === "diamonds") {
-      priceDisplay = `<div class="item-price">Rp ${item.price.toLocaleString()}</div>`;
-    } else {
-      const currency = item.currency === "coins" ? "💎" : "💍";
-      priceDisplay = `<div class="item-price">${currency} ${item.cost.toLocaleString()}</div>`;
-    }
+    // All items now use IDR pricing
+    const priceDisplay = `<div class="item-price">Rp ${item.price.toLocaleString()}</div>`;
 
     const bonusDisplay = item.bonus
       ? `<div class="bonus-indicator">${item.bonus}</div>`
