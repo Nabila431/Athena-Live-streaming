@@ -697,40 +697,63 @@ class ShopManager {
   }
 
   processRealMoneyPurchase(item, quantity) {
-    // Add to pending purchases
-    this.addPurchaseToHistory(item, quantity, "pending");
-
-    // Create WhatsApp message
     const totalPrice = item.price * quantity;
     const paymentMethod = document.querySelector(".payment-btn.active").dataset
       .method;
+    const orderRef = window.paymentManager
+      ? window.paymentManager.generatePaymentReference()
+      : "ORDER_" + Date.now();
 
-    let message = `🛍️ *Pembelian Virtual Item - Nabila Stream*\n\n`;
-    message += `📦 *Item:* ${item.name}\n`;
-    message += `🔢 *Jumlah:* ${quantity}\n`;
-    message += `💰 *Total:* Rp ${totalPrice.toLocaleString()}\n`;
-    message += `💳 *Metode:* ${paymentMethod === "gopay" ? "GoPay" : "Transfer Bank"}\n`;
-    message += `👤 *Username:* ${this.currentUser.name}\n`;
-    message += `📧 *Email:* ${this.currentUser.email}\n\n`;
+    // Create order data
+    const orderData = {
+      orderRef: orderRef,
+      user: this.currentUser,
+      item: item,
+      quantity: quantity,
+      totalPrice: totalPrice,
+      paymentMethod: paymentMethod,
+      isTopUp: false,
+    };
 
-    if (paymentMethod === "gopay") {
-      message += `Saya sudah transfer ke GoPay: *0895340205302*\n\n`;
+    // Process through payment manager if available
+    if (window.paymentManager) {
+      const result = window.paymentManager.processWhatsAppCheckout(orderData);
+      if (result.success) {
+        document.getElementById("purchaseModal").style.display = "none";
+        this.showPurchaseSuccess(result.message);
+        this.loadPurchaseHistory();
+      }
     } else {
-      message += `Saya sudah transfer ke rekening BCA yang diberikan\n\n`;
+      // Fallback to direct WhatsApp
+      this.addPurchaseToHistory(item, quantity, "pending");
+
+      let message = `🛍️ *Pembelian Virtual Item - Nabila Stream*\n\n`;
+      message += `📋 *Order ID:* ${orderRef}\n`;
+      message += `📦 *Item:* ${item.name}\n`;
+      message += `🔢 *Jumlah:* ${quantity}\n`;
+      message += `💰 *Total:* Rp ${totalPrice.toLocaleString()}\n`;
+      message += `💳 *Metode:* ${paymentMethod === "gopay" ? "GoPay" : "Transfer Bank"}\n`;
+      message += `👤 *Username:* ${this.currentUser.name}\n`;
+      message += `📧 *Email:* ${this.currentUser.email}\n\n`;
+
+      if (paymentMethod === "gopay") {
+        message += `Saya sudah transfer ke GoPay: *0895340205302*\n\n`;
+      } else {
+        message += `Saya sudah transfer ke rekening BCA yang diberikan\n\n`;
+      }
+
+      message += `Mohon konfirmasi dan proses pesanan saya. Terima kasih! 🙏`;
+
+      const whatsappUrl = `https://wa.me/6285810526151?text=${encodeURIComponent(message)}`;
+
+      document.getElementById("purchaseModal").style.display = "none";
+      window.open(whatsappUrl, "_blank");
+
+      this.showPurchaseSuccess(
+        "Pesanan berhasil dibuat! Anda akan diarahkan ke WhatsApp admin.",
+      );
+      this.loadPurchaseHistory();
     }
-
-    message += `Mohon konfirmasi dan proses pesanan saya. Terima kasih! 🙏`;
-
-    const whatsappUrl = `https://wa.me/6285810526151?text=${encodeURIComponent(message)}`;
-
-    // Close modal and redirect
-    document.getElementById("purchaseModal").style.display = "none";
-    window.open(whatsappUrl, "_blank");
-
-    this.showPurchaseSuccess(
-      "Pesanan berhasil dibuat! Anda akan diarahkan ke WhatsApp admin.",
-    );
-    this.loadPurchaseHistory();
   }
 
   addPurchaseToHistory(item, quantity, status) {
@@ -911,26 +934,26 @@ style.textContent = `
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         animation: slideInRight 0.3s ease;
     }
-    
+
     .purchase-notification.success {
         border-color: #27ae60;
     }
-    
+
     .notification-content {
         display: flex;
         align-items: center;
         gap: 15px;
     }
-    
+
     .notification-icon {
         font-size: 1.5rem;
     }
-    
+
     .notification-message {
         color: var(--text-light);
         font-weight: bold;
     }
-    
+
     @keyframes slideInRight {
         from {
             opacity: 0;
@@ -941,12 +964,12 @@ style.textContent = `
             transform: translateX(0);
         }
     }
-    
+
     .vip-features {
         text-align: left;
         margin-top: 15px;
     }
-    
+
     .feature-item {
         color: var(--text-dark);
         margin: 5px 0;
