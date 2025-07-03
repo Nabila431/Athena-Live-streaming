@@ -2,27 +2,29 @@
 
 ## 🛍️ Virtual Shop Features
 
-### Virtual Currency System
+### Direct IDR Payment System
 
-- **💎 Coins**: Basic currency for virtual gifts and emotes (1 Coin = Rp 10)
-- **💍 Diamonds**: Premium currency for VIP features and exclusive items (1 Diamond = Rp 500)
+All items now use **Indonesian Rupiah (IDR)** pricing directly, ranging from **Rp 500 - Rp 100,000**, making it more accessible and transparent for Indonesian users.
 
 ### Shop Categories
 
 #### 1. 💎 Coins Packages
 
-- 1,000 Coins - Rp 10,000
-- 5,000 Coins - Rp 45,000 (10% bonus)
-- 10,000 Coins - Rp 85,000 (15% bonus) - Most Popular
-- 25,000 Coins - Rp 200,000 (20% bonus)
-- 50,000 Coins - Rp 375,000 (25% bonus)
+- 100 Coins - Rp 500 (Perfect for beginners)
+- 500 Coins - Rp 2,500 (+ 50 Bonus Coins) - Popular
+- 1,000 Coins - Rp 5,000 (+ 150 Bonus Coins) - Most Popular
+- 2,500 Coins - Rp 12,000 (+ 500 Bonus Coins)
+- 5,000 Coins - Rp 22,000 (+ 1,250 Bonus Coins)
+- 10,000 Coins - Rp 40,000 (+ 3,000 Bonus Coins)
 
 #### 2. 💍 Diamonds Packages
 
-- 100 Diamonds - Rp 50,000
-- 500 Diamonds - Rp 225,000 (10% bonus) - Best Value
-- 1,000 Diamonds - Rp 425,000 (15% bonus)
-- 2,500 Diamonds - Rp 1,000,000 (20% bonus)
+- 10 Diamonds - Rp 1,500 (Mini premium pack)
+- 50 Diamonds - Rp 7,000 (+ 5 Bonus Diamonds) - Popular
+- 100 Diamonds - Rp 13,000 (+ 15 Bonus Diamonds) - Most Popular
+- 250 Diamonds - Rp 30,000 (+ 50 Bonus Diamonds)
+- 500 Diamonds - Rp 55,000 (+ 125 Bonus Diamonds)
+- 1,000 Diamonds - Rp 100,000 (+ 300 Bonus Diamonds)
 
 #### 3. 🎁 Virtual Gifts
 
