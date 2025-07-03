@@ -537,17 +537,8 @@ class ShopManager {
   canAffordItem(item) {
     if (!this.currentUser) return false;
 
-    const balance = this.getUserBalance();
-
-    if (item.price) {
-      return true; // Real money purchases are always "affordable" until payment
-    } else if (item.currency === "coins") {
-      return balance.coins >= item.cost;
-    } else if (item.currency === "diamonds") {
-      return balance.diamonds >= item.cost;
-    }
-
-    return false;
+    // All items now use IDR pricing, so they're always "affordable" until payment
+    return true;
   }
 
   showPurchaseModal(item, category) {
