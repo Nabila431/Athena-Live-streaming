@@ -1,90 +1,118 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda - Live And Streaming by Nabila Ahmad Studio Development</title>
-    <link rel="stylesheet" href="css/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Beranda - Live And Streaming by Nabila Ahmad Studio Development
+    </title>
+    <link rel="stylesheet" href="css/style.css" />
     <script src="https://unpkg.com/@mux/mux-player"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="active">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.png" alt="Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html" class="active">Beranda</a></li>
+            <li><a href="studio.html">Studio</a></li>
+            <li><a href="profile.html">Profil</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main>
-        <section class="hero-section">
-            <div class="container">
-                <h1>Temukan Live Streaming Terbaik</h1>
-                <p>Tonton streamer favoritmu, ikuti konten menarik, dan mulai live-mu sendiri sekarang!</p>
-                <a href="studio.html" class="btn">Mulai Live Sekarang!</a>
-            </div>
-        </section>
+      <section class="hero-section">
+        <div class="container">
+          <h1>Temukan Live Streaming Terbaik</h1>
+          <p>
+            Tonton streamer favoritmu, ikuti konten menarik, dan mulai live-mu
+            sendiri sekarang!
+          </p>
+          <a href="studio.html" class="btn">Mulai Live Sekarang!</a>
+        </div>
+      </section>
 
-        <section class="container">
-            <h2>Live Streaming yang Sedang Berlangsung</h2>
-            <div class="stream-grid" id="liveStreamsContainer">
-                <div class="stream-card">
-                    <a href="stream.html?id=example1">
-                        <div class="stream-card-thumbnail">
-                            <img src="https://via.placeholder.com/350x200?text=Live+Stream+1" alt="Stream Thumbnail">
-                            <span class="live-badge">LIVE</span>
-                        </div>
-                        <div class="stream-card-info">
-                            <h3>Judul Live Stream Contoh 1</h3>
-                            <p>Deskripsi singkat tentang stream ini.</p>
-                            <div class="streamer-info">
-                                <img src="https://via.placeholder.com/30" alt="Streamer Avatar">
-                                <span>StreamerName123</span>
-                            </div>
-                        </div>
-                    </a>
+      <section class="container">
+        <h2>Live Streaming yang Sedang Berlangsung</h2>
+        <div class="stream-grid" id="liveStreamsContainer">
+          <div class="stream-card">
+            <a href="stream.html?id=example1">
+              <div class="stream-card-thumbnail">
+                <img
+                  src="https://via.placeholder.com/350x200?text=Live+Stream+1"
+                  alt="Stream Thumbnail"
+                />
+                <span class="live-badge">LIVE</span>
+              </div>
+              <div class="stream-card-info">
+                <h3>Judul Live Stream Contoh 1</h3>
+                <p>Deskripsi singkat tentang stream ini.</p>
+                <div class="streamer-info">
+                  <img
+                    src="https://via.placeholder.com/30"
+                    alt="Streamer Avatar"
+                  />
+                  <span>StreamerName123</span>
                 </div>
-                <div class="stream-card">
-                    <a href="stream.html?id=example2">
-                        <div class="stream-card-thumbnail">
-                            <img src="https://via.placeholder.com/350x200?text=Live+Stream+2" alt="Stream Thumbnail">
-                            <span class="live-badge">LIVE</span>
-                        </div>
-                        <div class="stream-card-info">
-                            <h3>Judul Live Stream Contoh 2</h3>
-                            <p>Sedang bermain game seru!</p>
-                            <div class="streamer-info">
-                                <img src="https://via.placeholder.com/30" alt="Streamer Avatar">
-                                <span>GamerPro</span>
-                            </div>
-                        </div>
-                    </a>
+              </div>
+            </a>
+          </div>
+          <div class="stream-card">
+            <a href="stream.html?id=example2">
+              <div class="stream-card-thumbnail">
+                <img
+                  src="https://via.placeholder.com/350x200?text=Live+Stream+2"
+                  alt="Stream Thumbnail"
+                />
+                <span class="live-badge">LIVE</span>
+              </div>
+              <div class="stream-card-info">
+                <h3>Judul Live Stream Contoh 2</h3>
+                <p>Sedang bermain game seru!</p>
+                <div class="streamer-info">
+                  <img
+                    src="https://via.placeholder.com/30"
+                    alt="Streamer Avatar"
+                  />
+                  <span>GamerPro</span>
                 </div>
-                </div>
-            <p id="noStreamsMessage" style="text-align: center; color: var(--text-dark); display: none;">Belum ada live stream yang aktif saat ini.</p>
-        </section>
+              </div>
+            </a>
+          </div>
+        </div>
+        <p
+          id="noStreamsMessage"
+          style="text-align: center; color: var(--text-dark); display: none"
+        >
+          Belum ada live stream yang aktif saat ini.
+        </p>
+      </section>
     </main>
 
     <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
-        </div>
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/main.js"></script>
-</body>
+  </body>
 </html>

@@ -1,66 +1,86 @@
-
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profil Saya - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html" class="active">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.png" alt="Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="studio.html">Studio</a></li>
+            <li><a href="profile.html" class="active">Profil</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="profile-container container">
-        <div class="profile-header">
-            <img id="profileAvatar" src="https://via.placeholder.com/120" alt="Profile Avatar" class="profile-avatar">
-            <h1 id="profileName">Memuat Nama...</h1>
-            <p id="profileBio">Memuat Bio...</p>
+      <div class="profile-header">
+        <img
+          id="profileAvatar"
+          src="https://via.placeholder.com/120"
+          alt="Profile Avatar"
+          class="profile-avatar"
+        />
+        <h1 id="profileName">Memuat Nama...</h1>
+        <p id="profileBio">Memuat Bio...</p>
+      </div>
+
+      <section class="profile-info">
+        <h3>Informasi Akun</h3>
+        <div class="profile-details">
+          <p>
+            <strong>Email:</strong>
+            <span id="profileEmail">memuat@email.com</span>
+          </p>
+          <p>
+            <strong>Bergabung Sejak:</strong>
+            <span id="profileJoinedDate">Memuat tanggal...</span>
+          </p>
         </div>
+        <button id="editProfileBtn" class="btn" style="margin-top: 20px">
+          Edit Profil
+        </button>
+      </section>
 
-        <section class="profile-info">
-            <h3>Informasi Akun</h3>
-            <div class="profile-details">
-                <p><strong>Email:</strong> <span id="profileEmail">memuat@email.com</span></p>
-                <p><strong>Bergabung Sejak:</strong> <span id="profileJoinedDate">Memuat tanggal...</span></p>
-                </div>
-            <button id="editProfileBtn" class="btn" style="margin-top: 20px;">Edit Profil</button>
-        </section>
-
-        <section style="margin-top: 50px;">
-            <h2>Video Saya</h2>
-            <div class="stream-grid" id="myVideosContainer">
-                <p style="text-align: center; color: var(--text-dark);">Anda belum mengunggah video apapun.</p>
-                </div>
-        </section>
+      <section style="margin-top: 50px">
+        <h2>Video Saya</h2>
+        <div class="stream-grid" id="myVideosContainer">
+          <p style="text-align: center; color: var(--text-dark)">
+            Anda belum mengunggah video apapun.
+          </p>
+        </div>
+      </section>
     </main>
 
     <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
-        </div>
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/main.js"></script>
     <script src="js/profile.js"></script>
-</body>
+  </body>
 </html>

@@ -1,81 +1,99 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="streamTitle">Live Stream - Nabila Stream</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
     <script src="https://unpkg.com/@mux/mux-player"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="main-header">
-        <div class="container navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/logo.png" alt="Logo">
-                <span>Nabila Stream</span>
-            </a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="studio.html">Studio</a></li>
-                    <li><a href="profile.html">Profil</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" id="loginRegisterBtn" class="btn">Login / Daftar</a>
-                <button id="logoutBtn" class="btn" style="display: none;">Logout</button>
-            </div>
+      <div class="container navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/logo.png" alt="Logo" />
+          <span>Nabila Stream</span>
+        </a>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="studio.html">Studio</a></li>
+            <li><a href="profile.html">Profil</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="Auth.html" id="loginRegisterBtn" class="btn"
+            >Login / Daftar</a
+          >
+          <button id="logoutBtn" class="btn" style="display: none">
+            Logout
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="container">
-        <section class="stream-header">
-            <h1 id="currentStreamTitle">Memuat Live Stream...</h1>
-            <div class="streamer-details">
-                <img id="streamerAvatar" src="https://via.placeholder.com/50" alt="Streamer Avatar">
-                <div>
-                    <span id="streamerName">Memuat Streamer...</span>
-                    <p id="streamDescription" style="color: var(--text-dark); font-size: 0.95rem;"></p>
-                </div>
-            </div>
-        </section>
+      <section class="stream-header">
+        <h1 id="currentStreamTitle">Memuat Live Stream...</h1>
+        <div class="streamer-details">
+          <img
+            id="streamerAvatar"
+            src="https://via.placeholder.com/50"
+            alt="Streamer Avatar"
+          />
+          <div>
+            <span id="streamerName">Memuat Streamer...</span>
+            <p
+              id="streamDescription"
+              style="color: var(--text-dark); font-size: 0.95rem"
+            ></p>
+          </div>
+        </div>
+      </section>
 
-        <section class="stream-content">
-            <div class="video-player-container">
-                <mux-player
-                    id="liveStreamPlayer"
-                    stream-type="live"
-                    playback-id=""
-                    preload="auto"
-                    controls
-                    autoplay
-                    muted
-                ></mux-player>
+      <section class="stream-content">
+        <div class="video-player-container">
+          <mux-player
+            id="liveStreamPlayer"
+            stream-type="live"
+            playback-id=""
+            preload="auto"
+            controls
+            autoplay
+            muted
+          ></mux-player>
+        </div>
+        <div class="chat-sidebar">
+          <div class="chat-header">Live Chat</div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message">
+              <strong>Guest:</strong> Selamat datang di stream!
             </div>
-            <div class="chat-sidebar">
-                <div class="chat-header">Live Chat</div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-message"><strong>Guest:</strong> Selamat datang di stream!</div>
-                </div>
-                <form class="chat-input-form" id="chatForm">
-                    <input type="text" id="chatInput" placeholder="Ketik pesan Anda..." required>
-                    <button type="submit" class="btn">Kirim</button>
-                </form>
-            </div>
-        </section>
+          </div>
+          <form class="chat-input-form" id="chatForm">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Ketik pesan Anda..."
+              required
+            />
+            <button type="submit" class="btn">Kirim</button>
+          </form>
+        </div>
+      </section>
     </main>
 
     <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All rights reserved.</p>
-        </div>
+      <div class="container">
+        <p>
+          &copy; 2025 Live And Streaming by Nabila Ahmad Studio Development. All
+          rights reserved.
+        </p>
+      </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/main.js"></script>
     <script src="js/stream.js"></script>
-</body>
+  </body>
 </html>
-
-
