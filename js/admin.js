@@ -221,6 +221,18 @@ class AdminPanel {
       case "users":
         this.loadUsers();
         break;
+      case "campaigns":
+        this.loadCampaigns();
+        break;
+      case "creators":
+        this.loadCreators();
+        break;
+      case "withdrawals":
+        this.loadWithdrawals();
+        break;
+      case "management":
+        this.loadManagement();
+        break;
       case "analytics":
         this.loadAnalytics();
         break;
