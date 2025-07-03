@@ -57,6 +57,18 @@ class AdminPanel {
       .getElementById("usersTab")
       ?.addEventListener("click", () => this.switchSection("users"));
     document
+      .getElementById("campaignsTab")
+      ?.addEventListener("click", () => this.switchSection("campaigns"));
+    document
+      .getElementById("creatorsTab")
+      ?.addEventListener("click", () => this.switchSection("creators"));
+    document
+      .getElementById("withdrawalsTab")
+      ?.addEventListener("click", () => this.switchSection("withdrawals"));
+    document
+      .getElementById("managementTab")
+      ?.addEventListener("click", () => this.switchSection("management"));
+    document
       .getElementById("analyticsTab")
       ?.addEventListener("click", () => this.switchSection("analytics"));
 
@@ -307,7 +319,7 @@ class AdminPanel {
                         <span class="status-badge status-${order.status}">${this.formatStatus(order.status)}</span>
                     </div>
                 </div>
-                
+
                 <div class="order-customer">
                     <div class="customer-avatar">
                         <img src="${order.user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(order.user.name)}" alt="${order.user.name}">
@@ -317,7 +329,7 @@ class AdminPanel {
                         <div class="customer-email">${order.user.email}</div>
                     </div>
                 </div>
-                
+
                 <div class="order-item">
                     <div class="item-icon">${order.item.icon}</div>
                     <div class="item-details">
@@ -326,19 +338,19 @@ class AdminPanel {
                         <div class="item-quantity">Quantity: ${order.quantity}</div>
                     </div>
                 </div>
-                
+
                 <div class="order-payment">
                     <div class="payment-method">
                         ${this.getPaymentMethodIcon(order.paymentMethod)} ${this.formatPaymentMethod(order.paymentMethod)}
                     </div>
                     <div class="payment-amount">${this.formatCurrency(order.totalPrice)}</div>
                 </div>
-                
+
                 <div class="order-date">
                     <div class="created-date">Created: ${new Date(order.createdAt).toLocaleString("id-ID")}</div>
                     ${order.updatedAt !== order.createdAt ? `<div class="updated-date">Updated: ${new Date(order.updatedAt).toLocaleString("id-ID")}</div>` : ""}
                 </div>
-                
+
                 <div class="order-actions">
                     <button class="btn small primary" onclick="adminPanel.viewOrderDetail('${order.orderRef}')">
                         👁️ View Details
@@ -1719,33 +1731,33 @@ adminStyles.textContent = `
         .admin-stats {
             grid-template-columns: 1fr;
         }
-        
+
         .action-buttons {
             justify-content: center;
         }
-        
+
         .orders-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .section-header {
             flex-direction: column;
             align-items: stretch;
         }
-        
+
         .filters {
             justify-content: center;
         }
-        
+
         .analytics-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .user-profile {
             flex-direction: column;
             text-align: center;
         }
-        
+
         .customer-detail, .item-detail {
             flex-direction: column;
             text-align: center;
