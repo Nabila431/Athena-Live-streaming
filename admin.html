@@ -250,6 +250,301 @@
         </div>
       </section>
 
+      <!-- Campaigns Management -->
+      <section
+        id="campaignsSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>📢 Campaign Management</h1>
+
+          <div class="campaign-stats">
+            <div class="stat-card">
+              <div class="stat-icon">📢</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalCampaigns">0</div>
+                <div class="stat-label">Total Campaigns</div>
+              </div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingCampaigns">0</div>
+                <div class="stat-label">Pending Approval</div>
+              </div>
+            </div>
+            <div class="stat-card active">
+              <div class="stat-icon">🟢</div>
+              <div class="stat-info">
+                <div class="stat-number" id="activeCampaigns">0</div>
+                <div class="stat-label">Active Campaigns</div>
+              </div>
+            </div>
+            <div class="stat-card revenue">
+              <div class="stat-icon">💰</div>
+              <div class="stat-info">
+                <div class="stat-number" id="campaignRevenue">Rp 0</div>
+                <div class="stat-label">Campaign Revenue</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="campaigns-table-container">
+            <table class="campaigns-table">
+              <thead>
+                <tr>
+                  <th>Campaign ID</th>
+                  <th>User</th>
+                  <th>Package</th>
+                  <th>Post</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="campaignsTable">
+                <!-- Campaigns will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Creators Management -->
+      <section id="creatorsSection" class="admin-section" style="display: none">
+        <div class="container">
+          <h1>🌟 Creator Program Management</h1>
+
+          <div class="creators-stats">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalCreators">0</div>
+                <div class="stat-label">Total Creators</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingApplications">0</div>
+                <div class="stat-label">Pending Applications</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <div class="stat-number" id="approvedCreators">0</div>
+                <div class="stat-label">Approved Creators</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="creator-applications">
+            <h3>📋 Creator Applications</h3>
+            <div id="creatorApplicationsList">
+              <!-- Applications will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Withdrawals Management -->
+      <section
+        id="withdrawalsSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>💳 Withdrawal Management</h1>
+
+          <div class="withdrawal-stats">
+            <div class="stat-card">
+              <div class="stat-icon">💳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="totalWithdrawals">0</div>
+                <div class="stat-label">Total Requests</div>
+              </div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-number" id="pendingWithdrawals">0</div>
+                <div class="stat-label">Pending Review</div>
+              </div>
+            </div>
+            <div class="stat-card approved">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <div class="stat-number" id="approvedWithdrawals">Rp 0</div>
+                <div class="stat-label">Approved Amount</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="withdrawals-table-container">
+            <table class="withdrawals-table">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawalsTable">
+                <!-- Withdrawals will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Management Teams -->
+      <section
+        id="managementSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="container">
+          <h1>👥 Management Teams</h1>
+
+          <div class="teams-overview">
+            <div class="team-card">
+              <div class="team-header">
+                <h3>🤖 AI Support Division</h3>
+                <span class="team-status online">Online 24/7</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Advanced AI chatbot providing instant customer support for all
+                  platform inquiries.
+                </p>
+                <ul>
+                  <li>✅ 24/7 availability</li>
+                  <li>✅ Multi-language support</li>
+                  <li>✅ Smart response system</li>
+                  <li>✅ Real-time problem solving</li>
+                </ul>
+                <button class="btn primary" id="viewAiBot">
+                  🤖 Manage AI Bot
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📊 Reports Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Handles user reports, content moderation, and platform safety.
+                </p>
+                <ul>
+                  <li>✅ Content moderation</li>
+                  <li>✅ User report handling</li>
+                  <li>✅ Safety compliance</li>
+                  <li>✅ Policy enforcement</li>
+                </ul>
+                <button class="btn primary" id="viewReports">
+                  📊 View Reports
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📝 Registration Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Manages user registrations, creator applications, and account
+                  verification.
+                </p>
+                <ul>
+                  <li>✅ User registration</li>
+                  <li>✅ Creator program applications</li>
+                  <li>✅ Account verification</li>
+                  <li>✅ KYC processes</li>
+                </ul>
+                <button class="btn primary" id="viewRegistrations">
+                  📝 Manage Registrations
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>💰 Finance Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>Handles payments, withdrawals, and financial operations.</p>
+                <ul>
+                  <li>✅ Payment processing</li>
+                  <li>✅ Withdrawal approvals</li>
+                  <li>✅ Financial reporting</li>
+                  <li>✅ Revenue management</li>
+                </ul>
+                <button class="btn primary" id="viewFinance">
+                  💰 Finance Dashboard
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📋 Policy Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Creates and maintains platform policies, terms of service, and
+                  compliance.
+                </p>
+                <ul>
+                  <li>✅ Policy development</li>
+                  <li>✅ Terms of service</li>
+                  <li>✅ Compliance monitoring</li>
+                  <li>✅ Legal framework</li>
+                </ul>
+                <button class="btn primary" id="viewPolicies">
+                  📋 Manage Policies
+                </button>
+              </div>
+            </div>
+
+            <div class="team-card">
+              <div class="team-header">
+                <h3>📢 Campaign Division</h3>
+                <span class="team-status active">Active</span>
+              </div>
+              <div class="team-description">
+                <p>
+                  Manages promotional campaigns and platform marketing
+                  initiatives.
+                </p>
+                <ul>
+                  <li>✅ Campaign strategy</li>
+                  <li>✅ Boost program management</li>
+                  <li>✅ Marketing analytics</li>
+                  <li>✅ ROI optimization</li>
+                </ul>
+                <button class="btn primary" id="viewCampaignDivision">
+                  📢 Campaign Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Analytics -->
       <section
         id="analyticsSection"
