@@ -706,17 +706,8 @@ class ShopManager {
     const quantity = parseInt(document.getElementById("quantity").value) || 1;
     const item = this.currentPurchaseItem;
 
-    // Check if it's a virtual currency purchase
-    const isVirtualPurchase =
-      item.currency === "coins" || item.currency === "diamonds";
-
-    if (isVirtualPurchase) {
-      // Process virtual currency purchase immediately
-      this.processVirtualPurchase(item, quantity);
-    } else {
-      // Process real money purchase through WhatsApp
-      this.processRealMoneyPurchase(item, quantity);
-    }
+    // All items now use IDR pricing, so process as real money purchase
+    this.processRealMoneyPurchase(item, quantity);
   }
 
   processVirtualPurchase(item, quantity) {
