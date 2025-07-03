@@ -8,32 +8,53 @@ const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Fungsi untuk memeriksa status autentikasi dan memperbarui UI navbar
 async function checkAuthStatus() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const loginRegisterBtn = document.getElementById("loginRegisterBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+    const loginRegisterBtn = document.getElementById("loginRegisterBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-  if (user) {
-    if (loginRegisterBtn) loginRegisterBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    console.log("User logged in:", user.email);
-  } else {
-    if (loginRegisterBtn) loginRegisterBtn.style.display = "inline-block";
-    if (logoutBtn) logoutBtn.style.display = "none";
-    console.log("User not logged in.");
+    if (error) {
+      console.error("Auth error:", error);
+      return null;
+    }
+
+    if (user) {
+      if (loginRegisterBtn) loginRegisterBtn.style.display = "none";
+      if (logoutBtn) logoutBtn.style.display = "inline-block";
+      console.log("User logged in:", user.email);
+      return user;
+    } else {
+      if (loginRegisterBtn) loginRegisterBtn.style.display = "inline-block";
+      if (logoutBtn) logoutBtn.style.display = "none";
+      console.log("User not logged in.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error checking auth status:", error);
+    return null;
   }
 }
 
 // Fungsi untuk menangani logout
 async function handleLogout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Logout error:", error.message);
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Logout error:", error.message);
+      alert("Logout gagal: " + error.message);
+    } else {
+      console.log("User logged out.");
+      // Update UI immediately
+      await checkAuthStatus();
+      // Redirect to home page
+      window.location.href = "index.html";
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
     alert("Logout gagal: " + error.message);
-  } else {
-    console.log("User logged out.");
-    window.location.href = "auth.html"; // Arahkan kembali ke halaman login
   }
 }
 
