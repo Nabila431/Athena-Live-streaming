@@ -1088,6 +1088,9 @@ a:hover {
   margin: 0;
 }
 
+/* Import Enhanced Styles */
+@import url("enhanced-styles.css");
+
 /* --- Responsiveness --- */
 @media (max-width: 768px) {
   .navbar {
