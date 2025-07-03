@@ -1088,8 +1088,9 @@ a:hover {
   margin: 0;
 }
 
-/* Import Enhanced Styles */
+/* Import enhanced styles */
 @import url("enhanced-styles.css");
+@import url("shop-styles.css");
 
 /* --- Responsiveness --- */
 @media (max-width: 768px) {
