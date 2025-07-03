@@ -1,5 +1,26 @@
 /* Enhanced Styles for All New Features */
 
+/* Navbar User Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary-color);
+  object-fit: cover;
+}
+
+#userName {
+  color: var(--text-light);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
 /* Avatar Selection */
 .avatar-selection {
   margin: 20px 0;
