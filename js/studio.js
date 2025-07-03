@@ -1,5 +1,14 @@
 // Studio page functionality
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Studio page loading...");
+
+  // Wait for auth to be initialized
+  if (typeof checkAuthStatus === "undefined") {
+    console.log("Waiting for main.js to load...");
+    setTimeout(() => window.location.reload(), 1000);
+    return;
+  }
+
   // Check if user is logged in
   const user = await checkAuthStatus();
 

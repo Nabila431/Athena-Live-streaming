@@ -1,13 +1,24 @@
 // Profile page functionality
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Profile page loading...");
+
+  // Wait for auth to be initialized
+  if (typeof checkAuthStatus === "undefined") {
+    console.log("Waiting for main.js to load...");
+    setTimeout(() => window.location.reload(), 1000);
+    return;
+  }
+
   // Check if user is logged in
   const user = await checkAuthStatus();
 
   if (!user) {
-    alert("Anda harus login terlebih dahulu");
+    alert("Anda harus login terlebih dahulu untuk mengakses profil");
     window.location.href = "Auth.html";
     return;
   }
+
+  console.log("Loading profile for user:", user.email);
 
   // Display user information
   loadUserProfile(user);
