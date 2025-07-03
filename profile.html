@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profil Saya - Nabila Stream</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/shop-styles.css" />
   </head>
   <body>
     <header class="main-header">
@@ -19,6 +20,7 @@
             <li><a href="studio.html">Studio</a></li>
             <li><a href="posts.html">Posts</a></li>
             <li><a href="chat.html">Chat</a></li>
+            <li><a href="shop.html">Shop</a></li>
             <li><a href="profile.html" class="active">Profil</a></li>
           </ul>
         </nav>
@@ -26,51 +28,454 @@
           <a href="Auth.html" id="loginRegisterBtn" class="btn"
             >Login / Daftar</a
           >
-          <button id="logoutBtn" class="btn" style="display: none">
-            Logout
-          </button>
+          <div class="user-info" style="display: none" id="userInfo">
+            <img
+              id="userAvatar"
+              class="nav-user-avatar"
+              style="display: none"
+            />
+            <span id="userName" style="display: none"></span>
+            <button id="logoutBtn" class="btn" style="display: none">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </header>
 
     <main class="profile-container container">
-      <div class="profile-header">
-        <img
-          id="profileAvatar"
-          src="https://via.placeholder.com/120"
-          alt="Profile Avatar"
-          class="profile-avatar"
-        />
-        <h1 id="profileName">Memuat Nama...</h1>
-        <p id="profileBio">Memuat Bio...</p>
+      <!-- Enhanced Profile Header -->
+      <div class="profile-header-enhanced">
+        <div class="profile-cover">
+          <img
+            id="profileCover"
+            src="https://via.placeholder.com/1200x300/6a11cb/ffffff?text=Cover+Photo"
+            alt="Cover Photo"
+            class="cover-photo"
+          />
+          <button id="editCoverBtn" class="edit-cover-btn">
+            📷 Ubah Cover
+          </button>
+        </div>
+
+        <div class="profile-info-main">
+          <div class="profile-avatar-section">
+            <img
+              id="profileAvatar"
+              src="https://via.placeholder.com/150"
+              alt="Profile Avatar"
+              class="profile-avatar-large"
+            />
+            <button id="editAvatarBtn" class="edit-avatar-btn">📷</button>
+          </div>
+
+          <div class="profile-details-main">
+            <h1 id="profileName">Memuat Nama...</h1>
+            <p id="profileBio">Memuat Bio...</p>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="profilePostsCount">0</span>
+                <span class="stat-label">Posts</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileFollowersCount">0</span>
+                <span class="stat-label">Followers</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileFollowingCount">0</span>
+                <span class="stat-label">Following</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="profileStreamsCount">0</span>
+                <span class="stat-label">Streams</span>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button id="editProfileBtn" class="btn primary">
+                ✏️ Edit Profil
+              </button>
+              <button id="createPostBtn" class="btn secondary">
+                📝 Buat Post
+              </button>
+              <button id="shareProfileBtn" class="btn accent">
+                🔗 Share Profil
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <section class="profile-info">
-        <h3>Informasi Akun</h3>
-        <div class="profile-details">
-          <p>
-            <strong>Email:</strong>
-            <span id="profileEmail">memuat@email.com</span>
-          </p>
-          <p>
-            <strong>Bergabung Sejak:</strong>
-            <span id="profileJoinedDate">Memuat tanggal...</span>
-          </p>
+      <!-- Profile Navigation Tabs -->
+      <div class="profile-tabs">
+        <button class="tab-btn active" data-tab="posts">📝 Posts</button>
+        <button class="tab-btn" data-tab="gallery">🖼️ Gallery</button>
+        <button class="tab-btn" data-tab="videos">🎥 Videos</button>
+        <button class="tab-btn" data-tab="streams">🔴 Live Streams</button>
+        <button class="tab-btn" data-tab="about">ℹ️ About</button>
+      </div>
+
+      <!-- Posts Tab -->
+      <section id="posts-tab" class="profile-section active">
+        <div class="posts-header">
+          <h2>📝 My Posts</h2>
+          <button id="newPostBtn" class="btn primary">➕ New Post</button>
         </div>
-        <button id="editProfileBtn" class="btn" style="margin-top: 20px">
-          Edit Profil
-        </button>
+        <div class="posts-grid" id="userPostsContainer">
+          <!-- User posts will be loaded here -->
+        </div>
       </section>
 
-      <section style="margin-top: 50px">
-        <h2>Video Saya</h2>
-        <div class="stream-grid" id="myVideosContainer">
-          <p style="text-align: center; color: var(--text-dark)">
-            Anda belum mengunggah video apapun.
-          </p>
+      <!-- Gallery Tab -->
+      <section id="gallery-tab" class="profile-section">
+        <div class="gallery-header">
+          <h2>🖼️ Photo Gallery</h2>
+          <button id="uploadPhotoBtn" class="btn primary">
+            📷 Upload Photo
+          </button>
+        </div>
+        <div class="gallery-grid" id="userGalleryContainer">
+          <!-- User photos will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Videos Tab -->
+      <section id="videos-tab" class="profile-section">
+        <div class="videos-header">
+          <h2>🎥 Video Gallery</h2>
+          <button id="uploadVideoBtn" class="btn primary">
+            🎬 Upload Video
+          </button>
+        </div>
+        <div class="videos-grid" id="userVideosContainer">
+          <!-- User videos will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Live Streams Tab -->
+      <section id="streams-tab" class="profile-section">
+        <div class="streams-header">
+          <h2>🔴 Live Stream History</h2>
+          <a href="studio.html" class="btn primary">🎬 Start Live Stream</a>
+        </div>
+        <div class="streams-grid" id="userStreamsContainer">
+          <!-- User stream history will be loaded here -->
+        </div>
+      </section>
+
+      <!-- About Tab -->
+      <section id="about-tab" class="profile-section">
+        <div class="about-content">
+          <h2>ℹ️ About Me</h2>
+          <div class="about-grid">
+            <div class="about-card">
+              <h3>📧 Contact Information</h3>
+              <div class="info-item">
+                <label>Email:</label>
+                <span id="aboutEmail">Loading...</span>
+              </div>
+              <div class="info-item">
+                <label>Phone:</label>
+                <span id="aboutPhone">Not provided</span>
+              </div>
+              <div class="info-item">
+                <label>Website:</label>
+                <span id="aboutWebsite">Not provided</span>
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>📅 Account Details</h3>
+              <div class="info-item">
+                <label>Joined:</label>
+                <span id="aboutJoinedDate">Loading...</span>
+              </div>
+              <div class="info-item">
+                <label>Last Active:</label>
+                <span id="aboutLastActive">Loading...</span>
+              </div>
+              <div class="info-item">
+                <label>Account Type:</label>
+                <span id="aboutAccountType">Standard</span>
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>🎯 Interests & Skills</h3>
+              <div class="tags-container" id="userInterests">
+                <!-- User interests will be loaded here -->
+              </div>
+            </div>
+
+            <div class="about-card">
+              <h3>🏆 Achievements</h3>
+              <div class="achievements-container" id="userAchievements">
+                <!-- User achievements will be loaded here -->
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+      <div class="modal-content edit-profile-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>✏️ Edit Profile</h2>
+        </div>
+        <div class="modal-body">
+          <form id="editProfileForm" class="profile-form">
+            <div class="form-group">
+              <label for="editName">Full Name:</label>
+              <input type="text" id="editName" required maxlength="50" />
+            </div>
+
+            <div class="form-group">
+              <label for="editBio">Bio:</label>
+              <textarea
+                id="editBio"
+                maxlength="160"
+                placeholder="Tell us about yourself..."
+              ></textarea>
+              <small class="char-count">0/160 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label for="editPhone">Phone Number:</label>
+              <input
+                type="tel"
+                id="editPhone"
+                placeholder="+62 xxx-xxxx-xxxx"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editWebsite">Website:</label>
+              <input
+                type="url"
+                id="editWebsite"
+                placeholder="https://yourwebsite.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editLocation">Location:</label>
+              <input
+                type="text"
+                id="editLocation"
+                placeholder="City, Country"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Interests:</label>
+              <div class="interests-selector">
+                <label class="checkbox-label">
+                  <input type="checkbox" value="gaming" /> 🎮 Gaming
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="music" /> 🎵 Music
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="art" /> 🎨 Art
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="technology" /> 💻 Technology
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="cooking" /> 🍳 Cooking
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="sports" /> ⚽ Sports
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="travel" /> ✈️ Travel
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" value="photography" /> 📷 Photography
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                id="cancelEditProfile"
+                class="btn secondary"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn primary">💾 Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal">
+      <div class="modal-content create-post-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>📝 Create New Post</h2>
+        </div>
+        <div class="modal-body">
+          <form id="createPostForm" class="post-form">
+            <div class="form-group">
+              <label for="postTitle">Post Title:</label>
+              <input
+                type="text"
+                id="postTitle"
+                required
+                maxlength="100"
+                placeholder="What's on your mind?"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="postContent">Content:</label>
+              <textarea
+                id="postContent"
+                required
+                maxlength="1000"
+                placeholder="Share your thoughts..."
+              ></textarea>
+              <small class="char-count">0/1000 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label>Attach Media:</label>
+              <div class="media-upload">
+                <input
+                  type="file"
+                  id="postMedia"
+                  accept="image/*,video/*"
+                  multiple
+                />
+                <div class="upload-area" id="postUploadArea">
+                  <div class="upload-icon">📎</div>
+                  <div class="upload-text">
+                    Click to select or drag & drop files
+                  </div>
+                  <div class="upload-hint">
+                    Images and videos up to 10MB each
+                  </div>
+                </div>
+                <div class="media-preview" id="postMediaPreview"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="postTags">Tags:</label>
+              <input
+                type="text"
+                id="postTags"
+                placeholder="gaming, music, art (comma separated)"
+              />
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="cancelCreatePost" class="btn secondary">
+                Cancel
+              </button>
+              <button type="submit" class="btn primary">📤 Publish Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Photo Modal -->
+    <div id="uploadPhotoModal" class="modal">
+      <div class="modal-content upload-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>📷 Upload Photos</h2>
+        </div>
+        <div class="modal-body">
+          <div class="upload-section">
+            <input type="file" id="galleryPhotos" accept="image/*" multiple />
+            <div class="upload-area" id="photoUploadArea">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">Select multiple photos</div>
+              <div class="upload-hint">JPG, PNG, GIF up to 5MB each</div>
+            </div>
+            <div class="photos-preview" id="photosPreview"></div>
+          </div>
+          <div class="upload-actions">
+            <button id="cancelPhotoUpload" class="btn secondary">Cancel</button>
+            <button id="confirmPhotoUpload" class="btn primary">
+              📤 Upload Photos
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Video Modal -->
+    <div id="uploadVideoModal" class="modal">
+      <div class="modal-content upload-modal">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+          <h2>🎬 Upload Video</h2>
+        </div>
+        <div class="modal-body">
+          <form id="uploadVideoForm" class="upload-form">
+            <div class="form-group">
+              <label for="videoTitle">Video Title:</label>
+              <input type="text" id="videoTitle" required maxlength="100" />
+            </div>
+
+            <div class="form-group">
+              <label for="videoDescription">Description:</label>
+              <textarea id="videoDescription" maxlength="500"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Video File:</label>
+              <input type="file" id="videoFile" accept="video/*" required />
+              <div class="upload-area" id="videoUploadArea">
+                <div class="upload-icon">🎬</div>
+                <div class="upload-text">Select video file</div>
+                <div class="upload-hint">MP4, WebM, AVI up to 100MB</div>
+              </div>
+              <div class="video-preview" id="videoPreview"></div>
+            </div>
+
+            <div class="form-group">
+              <label>Thumbnail:</label>
+              <input type="file" id="videoThumbnail" accept="image/*" />
+              <div class="thumbnail-preview" id="thumbnailPreview"></div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                id="cancelVideoUpload"
+                class="btn secondary"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn primary">📤 Upload Video</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo/Video Viewer Modal -->
+    <div id="mediaViewerModal" class="modal">
+      <div class="modal-content media-viewer">
+        <span class="close">&times;</span>
+        <div class="media-container" id="mediaContainer">
+          <!-- Media content will be displayed here -->
+        </div>
+        <div class="media-info" id="mediaInfo">
+          <!-- Media information will be displayed here -->
+        </div>
+      </div>
+    </div>
 
     <footer class="main-footer">
       <div class="container">
